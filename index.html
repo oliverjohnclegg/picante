@@ -9,19 +9,35 @@
   </head>
   <body>
     <main class="app-shell">
-      <section id="setup-screen" class="screen">
+      <section id="add-player-screen" class="screen">
         <div class="panel hero">
           <h1>Picante</h1>
-          <p class="subtitle">One screen. High chaos. Host-controlled penalties.</p>
+          <p class="subtitle">Add players first, then confirm before kickoff.</p>
         </div>
         <div class="panel">
+          <h2>Add Players</h2>
           <div class="setup-row">
             <label for="player-count">Players</label>
             <select id="player-count"></select>
             <button id="generate-players" type="button">Generate</button>
           </div>
           <div id="players-config" class="players-config"></div>
-          <button id="start-game" type="button" class="action">Start Game</button>
+          <button id="confirm-players" type="button" class="action">Continue</button>
+        </div>
+      </section>
+
+      <section id="confirm-screen" class="screen hidden">
+        <div class="panel hero">
+          <h1>Picante</h1>
+          <p class="subtitle">Confirm the full roster before starting.</p>
+        </div>
+        <div class="panel confirmation-panel">
+          <h2>Confirm Players</h2>
+          <div id="players-confirmation" class="players-confirmation"></div>
+          <div class="confirmation-actions">
+            <button id="edit-players" type="button">Back to Add Players</button>
+            <button id="start-game" type="button" class="action">Start Game</button>
+          </div>
         </div>
       </section>
 

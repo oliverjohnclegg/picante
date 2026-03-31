@@ -11,11 +11,15 @@ import {
 } from "/src/game/engine.js";
 
 const elements = {
-  setupScreen: document.querySelector("#setup-screen"),
+  addPlayerScreen: document.querySelector("#add-player-screen"),
+  confirmScreen: document.querySelector("#confirm-screen"),
   gameScreen: document.querySelector("#game-screen"),
   playerCount: document.querySelector("#player-count"),
   generatePlayers: document.querySelector("#generate-players"),
+  confirmPlayers: document.querySelector("#confirm-players"),
   playersConfig: document.querySelector("#players-config"),
+  playersConfirmation: document.querySelector("#players-confirmation"),
+  editPlayers: document.querySelector("#edit-players"),
   startGame: document.querySelector("#start-game"),
   newGame: document.querySelector("#new-game"),
   deckMeta: document.querySelector("#deck-meta"),
@@ -34,15 +38,12 @@ const elements = {
 
 let gameState = null;
 let lastDrinkAlerts = [];
+let pendingPlayers = [];
 
 function setScreen(screen) {
-  if (screen === "setup") {
-    elements.setupScreen.classList.remove("hidden");
-    elements.gameScreen.classList.add("hidden");
-    return;
-  }
-  elements.setupScreen.classList.add("hidden");
-  elements.gameScreen.classList.remove("hidden");
+  elements.addPlayerScreen.classList.toggle("hidden", screen !== "add-players");
+  elements.confirmScreen.classList.toggle("hidden", screen !== "confirm");
+  elements.gameScreen.classList.toggle("hidden", screen !== "game");
 }
 
 function createLevelOptions(selected) {
@@ -85,6 +86,24 @@ function parsePlayersFromSetup() {
     const level = levelInput?.value || "medium";
     return { name, abv, level };
   });
+}
+
+function renderPlayersConfirmation() {
+  if (pendingPlayers.length < 3) {
+    elements.playersConfirmation.innerHTML = `<p class="muted">Configure at least 3 players to continue.</p>`;
+    return;
+  }
+  elements.playersConfirmation.innerHTML = pendingPlayers
+    .map(
+      (player, index) => `
+      <article class="player-confirm-card">
+        <h3>${index + 1}. ${player.name}</h3>
+        <p>ABV ${player.abv}%</p>
+        <p>Level ${player.level}</p>
+      </article>
+    `,
+    )
+    .join("");
 }
 
 function playerById(id) {
@@ -247,13 +266,24 @@ function announce(message) {
   gameState.log.unshift({ type: "system", message });
 }
 
-function startGameFromSetup() {
+function handleConfirmPlayers() {
   const players = parsePlayersFromSetup();
   if (players.length < 3) {
     return;
   }
+  pendingPlayers = players;
+  renderPlayersConfirmation();
+  setScreen("confirm");
+}
+
+function startGameFromConfirmation() {
+  if (pendingPlayers.length < 3) {
+    return;
+  }
+  const players = pendingPlayers.map((player) => ({ ...player }));
   gameState = createGame(players);
   lastDrinkAlerts = [];
+  pendingPlayers = [];
   setScreen("game");
   renderAll();
 }
@@ -304,11 +334,18 @@ function initPlayerCount() {
 
 function initEvents() {
   elements.generatePlayers.addEventListener("click", renderPlayerConfigRows);
-  elements.startGame.addEventListener("click", startGameFromSetup);
+  elements.playerCount.addEventListener("change", renderPlayerConfigRows);
+  elements.confirmPlayers.addEventListener("click", handleConfirmPlayers);
+  elements.editPlayers.addEventListener("click", () => {
+    setScreen("add-players");
+  });
+  elements.startGame.addEventListener("click", startGameFromConfirmation);
   elements.newGame.addEventListener("click", () => {
     gameState = null;
     lastDrinkAlerts = [];
-    setScreen("setup");
+    pendingPlayers = [];
+    renderPlayersConfirmation();
+    setScreen("add-players");
   });
   elements.drawCard.addEventListener("click", handleDrawCard);
   elements.endTurn.addEventListener("click", handleEndTurn);
@@ -331,8 +368,9 @@ function initEvents() {
 function init() {
   initPlayerCount();
   renderPlayerConfigRows();
+  renderPlayersConfirmation();
   initEvents();
-  setScreen("setup");
+  setScreen("add-players");
 }
 
 init();
