@@ -51,6 +51,8 @@
 #start-game {
   margin-top: 0.7rem;
   width: 100%;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
 }
 
 #game-screen {
@@ -267,6 +269,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.3rem;
+  margin-top: 0.2rem;
 }
 
 .turn-actions button {
@@ -336,5 +339,30 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
     overflow-y: auto;
+    padding-bottom: 1rem;
+  }
+
+  .scoreboard-panel {
+    order: -1;
+  }
+
+  .scoreboard {
+    display: flex;
+    gap: 0.3rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+
+  .player-card {
+    min-width: 120px;
+    flex-shrink: 0;
+  }
+
+  .turn-panel {
+    padding-bottom: 0.5rem;
+  }
+
+  .penalty-panel {
+    border-top: 1px solid var(--border);
   }
 }

@@ -128,7 +128,7 @@ function renderPenaltyControls() {
   if (!gameState) return;
   const turn = gameState.currentTurn;
   if (!turn) {
-    elements.penaltyControls.innerHTML = `<p class="muted compact">Draw a card first.</p>`;
+    elements.penaltyControls.innerHTML = `<p class="muted compact">Draw a card to begin.</p>`;
     return;
   }
   const total = Object.values(turn.allocations).reduce((sum, value) => sum + value, 0);
