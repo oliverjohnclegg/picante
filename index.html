@@ -2,49 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Picante</title>
     <link rel="stylesheet" href="/src/styles/base.css" />
     <link rel="stylesheet" href="/src/styles/layout.css" />
   </head>
   <body>
     <main class="app-shell">
-      <section id="add-player-screen" class="screen">
+      <section id="setup-screen" class="screen">
         <div class="panel hero">
           <h1>Picante</h1>
-          <p class="subtitle">Add players first, then confirm before kickoff.</p>
+          <p class="subtitle">Set up your players and jump in.</p>
         </div>
-        <div class="panel">
-          <h2>Add Players</h2>
-          <div class="setup-row">
-            <label for="player-count">Players</label>
+        <div class="panel setup-panel">
+          <div class="setup-header">
+            <h2>Players</h2>
             <select id="player-count"></select>
-            <button id="generate-players" type="button">Generate</button>
           </div>
           <div id="players-config" class="players-config"></div>
-          <button id="confirm-players" type="button" class="action">Continue</button>
-        </div>
-      </section>
-
-      <section id="confirm-screen" class="screen hidden">
-        <div class="panel hero">
-          <h1>Picante</h1>
-          <p class="subtitle">Confirm the full roster before starting.</p>
-        </div>
-        <div class="panel confirmation-panel">
-          <h2>Confirm Players</h2>
-          <div id="players-confirmation" class="players-confirmation"></div>
-          <div class="confirmation-actions">
-            <button id="edit-players" type="button">Back to Add Players</button>
-            <button id="start-game" type="button" class="action">Start Game</button>
-          </div>
+          <button id="start-game" type="button" class="action">Start Game</button>
         </div>
       </section>
 
       <section id="game-screen" class="screen hidden">
         <div class="topbar panel">
-          <div id="deck-meta"></div>
-          <div id="turn-meta"></div>
+          <div class="topbar-left">
+            <span id="turn-meta"></span>
+            <span id="deck-meta" class="muted"></span>
+          </div>
           <button id="new-game" type="button">New Game</button>
         </div>
 
@@ -55,21 +40,18 @@
           </section>
 
           <section class="panel turn-panel">
-            <h2 id="turn-title">Turn</h2>
             <button id="draw-card" type="button" class="action">Draw Card</button>
             <div id="card-view" class="card-view"></div>
             <div id="forfeit-view" class="forfeit-view"></div>
-            <div id="penalty-controls" class="penalty-controls"></div>
-            <div class="turn-actions">
-              <button id="randomize-penalties" type="button">Random Suggestion</button>
-              <button id="reset-penalties" type="button">Reset Turn Penalties</button>
-              <button id="end-turn" type="button" class="action">End Turn</button>
-            </div>
           </section>
 
-          <section class="panel log-panel">
-            <h2>Game Feed</h2>
-            <div id="event-log" class="event-log"></div>
+          <section class="panel penalty-panel">
+            <div id="penalty-controls" class="penalty-controls"></div>
+            <div class="turn-actions">
+              <button id="randomize-penalties" type="button">Random</button>
+              <button id="reset-penalties" type="button">Reset</button>
+              <button id="end-turn" type="button" class="action">End Turn</button>
+            </div>
           </section>
         </div>
       </section>

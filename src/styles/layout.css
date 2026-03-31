@@ -1,11 +1,13 @@
 .app-shell {
-  max-width: 1300px;
+  max-width: 100%;
   margin: 0 auto;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 .screen {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.6rem;
 }
 
 .hero {
@@ -16,112 +18,121 @@
     linear-gradient(180deg, rgba(36, 21, 44, 0.95), rgba(24, 16, 34, 0.95));
 }
 
-.setup-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 0.6rem;
-  align-items: end;
+.setup-panel {
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
 }
 
-.setup-row label {
-  font-size: 0.9rem;
-  color: var(--muted);
+.setup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.setup-header select {
+  width: 70px;
 }
 
 .players-config {
-  margin-top: 0.75rem;
   display: grid;
-  gap: 0.55rem;
+  gap: 0.45rem;
 }
 
 .player-config-row {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr 0.8fr;
-  gap: 0.6rem;
-}
-
-.player-config-row label {
-  display: grid;
-  gap: 0.3rem;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-
-#confirm-players {
-  margin-top: 0.9rem;
-  width: 100%;
-}
-
-.confirmation-panel {
-  min-height: 420px;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  gap: 0.8rem;
-}
-
-.players-confirmation {
-  display: grid;
-  gap: 0.55rem;
-}
-
-.player-confirm-card {
-  border: 1px solid #3a3057;
-  border-radius: 0.8rem;
-  padding: 0.62rem;
-  background: rgba(15, 11, 25, 0.75);
-  display: grid;
-  gap: 0.28rem;
-}
-
-.confirmation-actions {
-  display: grid;
+  grid-template-columns: 1.4fr 0.7fr 0.7fr;
   gap: 0.5rem;
+  align-items: center;
 }
 
 #start-game {
+  margin-top: 0.7rem;
   width: 100%;
+}
+
+#game-screen {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0;
+  overflow: hidden;
+}
+
+#game-screen > .topbar {
+  border-radius: 0;
+  padding: 0.35rem 0.6rem;
 }
 
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem 0.9rem;
-  font-size: 0.92rem;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 
 .layout {
   display: grid;
-  gap: 0.8rem;
-  grid-template-columns: minmax(260px, 1fr) minmax(380px, 1.2fr) minmax(260px, 1fr);
+  grid-template-columns: 1fr 1.1fr 1fr;
+  gap: 0;
+  overflow: hidden;
+  height: 100%;
 }
 
 .scoreboard-panel,
 .turn-panel,
-.log-panel {
-  min-height: 340px;
+.penalty-panel {
+  border-radius: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.4rem 0.5rem;
+}
+
+.scoreboard-panel h2,
+.penalty-panel h2 {
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
 }
 
 .scoreboard {
-  margin-top: 0.65rem;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .player-card {
   border: 1px solid #3a3057;
-  border-radius: 0.8rem;
-  padding: 0.62rem;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.45rem;
   background: rgba(15, 11, 25, 0.75);
   display: grid;
-  gap: 0.28rem;
+  gap: 0.15rem;
 }
 
-.player-card header {
+.player-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.player-card-name {
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.player-card-stats {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--muted);
 }
 
 .player-card.is-active {
@@ -131,68 +142,48 @@
 
 .level {
   text-transform: uppercase;
-  font-size: 0.72rem;
-  padding: 0.2rem 0.42rem;
+  font-size: 0.6rem;
+  padding: 0.1rem 0.3rem;
   border-radius: 999px;
   background: rgba(107, 77, 255, 0.2);
-}
-
-.holdings {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  margin-top: 0.2rem;
-}
-
-.badge {
-  border-radius: 999px;
-  border: 1px solid rgba(255, 123, 44, 0.35);
-  font-size: 0.72rem;
-  padding: 0.12rem 0.45rem;
-  color: #ffdeca;
 }
 
 .turn-panel {
   display: grid;
   align-content: start;
-  gap: 0.65rem;
+  gap: 0.35rem;
 }
 
 #draw-card {
   width: 100%;
+  padding: 0.4rem 0.6rem;
 }
 
 .card-view {
-  min-height: 138px;
   display: grid;
   place-items: center;
 }
 
 .card-face {
-  width: min(260px, 94%);
-  min-height: 130px;
-  border-radius: 0.95rem;
+  width: 100%;
+  max-width: 180px;
+  border-radius: 0.7rem;
   border: 1px solid #463b65;
-  padding: 0.7rem;
+  padding: 0.4rem 0.5rem;
   background: linear-gradient(160deg, rgba(34, 27, 52, 0.96), rgba(20, 16, 32, 0.92));
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .card-face .rank {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
 }
 
 .card-face .symbol {
-  place-self: center;
-  font-size: 2.3rem;
-}
-
-.card-face .suit-label {
-  justify-self: end;
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-size: 1.6rem;
 }
 
 .card-face.hearts .symbol,
@@ -223,103 +214,127 @@
 .forfeit-view {
   background: rgba(13, 10, 22, 0.7);
   border: 1px solid #362c52;
-  border-radius: 0.8rem;
-  padding: 0.68rem;
-  display: grid;
-  gap: 0.45rem;
-  line-height: 1.4;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  line-height: 1.3;
+  font-size: 0.78rem;
 }
 
-.forfeit-view ul {
+.forfeit-view:empty {
+  display: none;
+}
+
+.forfeit-text {
   margin: 0;
-  padding-left: 1rem;
-  color: var(--muted);
+}
+
+.penalty-panel {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
 }
 
 .penalty-controls {
-  background: rgba(13, 10, 22, 0.7);
-  border: 1px solid #33284b;
-  border-radius: 0.8rem;
-  padding: 0.65rem;
   display: grid;
-  gap: 0.55rem;
+  gap: 0.3rem;
 }
 
 .penalty-header {
   color: #ffdeca;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .allocation-grid {
   display: grid;
-  gap: 0.45rem;
+  gap: 0.25rem;
 }
 
 .allocation-row {
   display: grid;
-  grid-template-columns: 1fr 90px;
-  gap: 0.45rem;
+  grid-template-columns: 1fr 60px;
+  gap: 0.3rem;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
+}
+
+.allocation-row input {
+  padding: 0.25rem 0.4rem;
+  font-size: 0.78rem;
 }
 
 .turn-actions {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.45rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.3rem;
 }
 
-.event-log {
-  margin-top: 0.6rem;
-  max-height: 70vh;
-  overflow: auto;
-  display: grid;
-  gap: 0.45rem;
-  padding-right: 0.2rem;
+.turn-actions button {
+  font-size: 0.72rem;
+  padding: 0.35rem 0.3rem;
 }
 
-.event {
-  background: rgba(13, 10, 22, 0.7);
-  border: 1px solid #33284b;
-  border-radius: 0.75rem;
-  padding: 0.5rem 0.6rem;
-  line-height: 1.35;
-}
-
-@media (max-width: 1100px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
+.compact {
+  font-size: 0.78rem;
 }
 
 @media (max-width: 720px) {
   body {
-    padding: 0.5rem;
+    padding: 0;
   }
 
-  .setup-row {
-    grid-template-columns: 1fr;
+  .setup-panel {
+    max-width: 100%;
   }
+}
 
-  .player-config-row {
-    grid-template-columns: 1fr;
-  }
-
-  .confirmation-panel {
-    min-height: 0;
-  }
-
-  .turn-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .topbar {
-    font-size: 0.84rem;
+@media (max-height: 500px) {
+  .layout {
+    grid-template-columns: 0.9fr 1.2fr 0.9fr;
   }
 
   .scoreboard-panel,
   .turn-panel,
-  .log-panel {
-    min-height: 260px;
+  .penalty-panel {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .player-card {
+    padding: 0.2rem 0.35rem;
+  }
+
+  .player-card-name {
+    font-size: 0.75rem;
+  }
+
+  .card-face {
+    max-width: 140px;
+    padding: 0.25rem 0.4rem;
+  }
+
+  .card-face .rank {
+    font-size: 1rem;
+  }
+
+  .card-face .symbol {
+    font-size: 1.2rem;
+  }
+
+  .forfeit-view {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .turn-actions button {
+    font-size: 0.65rem;
+    padding: 0.25rem;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 720px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    overflow-y: auto;
   }
 }
