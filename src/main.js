@@ -13,8 +13,8 @@ import {
 const elements = {
   setupScreen: document.querySelector("#setup-screen"),
   gameScreen: document.querySelector("#game-screen"),
-  playerCount: document.querySelector("#player-count"),
-  generatePlayers: document.querySelector("#generate-players"),
+  setupHint: document.querySelector("#setup-hint"),
+  addPlayer: document.querySelector("#add-player"),
   playersConfig: document.querySelector("#players-config"),
   startGame: document.querySelector("#start-game"),
   newGame: document.querySelector("#new-game"),
@@ -34,6 +34,7 @@ const elements = {
 
 let gameState = null;
 let lastDrinkAlerts = [];
+let setupPlayers = [];
 
 function setScreen(screen) {
   if (screen === "setup") {
@@ -52,39 +53,74 @@ function createLevelOptions(selected) {
   }).join("");
 }
 
-function createPlayerConfigRow(index) {
-  const defaultAbv = index % 3 === 0 ? 5 : index % 3 === 1 ? 25 : 40;
+function createPlayerConfigRow(player, index) {
   return `
     <article class="player-config-row" data-row-index="${index}">
       <label>Name
-        <input type="text" class="player-name" value="Player ${index + 1}" maxlength="18" />
+        <input type="text" class="player-name" value="${player.name}" maxlength="18" />
       </label>
       <label>ABV %
-        <input type="number" class="player-abv" min="0" max="95" step="1" value="${defaultAbv}" />
+        <input type="number" class="player-abv" min="0" max="95" step="1" value="${player.abv}" />
       </label>
       <label>Level
-        <select class="player-level">${createLevelOptions("medium")}</select>
+        <select class="player-level">${createLevelOptions(player.level)}</select>
       </label>
+      <button type="button" class="remove-player" data-remove-index="${index}" ${setupPlayers.length <= 3 ? "disabled" : ""}>Remove</button>
     </article>
   `;
 }
 
-function renderPlayerConfigRows() {
-  const count = Number(elements.playerCount.value);
-  elements.playersConfig.innerHTML = Array.from({ length: count }, (_, index) => createPlayerConfigRow(index)).join("");
+function setupHintText() {
+  return `Players: ${setupPlayers.length} (min 3 · max 8)`;
 }
 
-function parsePlayersFromSetup() {
+function buildDefaultPlayer(index) {
+  const defaultAbv = index % 3 === 0 ? 5 : index % 3 === 1 ? 25 : 40;
+  return {
+    name: `Player ${index + 1}`,
+    abv: defaultAbv,
+    level: "medium",
+  };
+}
+
+function syncSetupPlayersFromDom() {
   const rows = [...elements.playersConfig.querySelectorAll(".player-config-row")];
-  return rows.map((row, index) => {
+  if (!rows.length) {
+    return;
+  }
+  setupPlayers = rows.map((row, index) => {
     const nameInput = row.querySelector(".player-name");
     const abvInput = row.querySelector(".player-abv");
     const levelInput = row.querySelector(".player-level");
-    const name = (nameInput?.value || "").trim() || `Player ${index + 1}`;
-    const abv = Math.max(0, Math.min(95, Number(abvInput?.value || 0)));
-    const level = levelInput?.value || "medium";
-    return { name, abv, level };
+    return {
+      name: (nameInput?.value || "").trim() || `Player ${index + 1}`,
+      abv: Math.max(0, Math.min(95, Number(abvInput?.value || 0))),
+      level: levelInput?.value || "medium",
+    };
   });
+}
+
+function renderPlayerConfigRows() {
+  elements.playersConfig.innerHTML = setupPlayers.map((player, index) => createPlayerConfigRow(player, index)).join("");
+  elements.setupHint.textContent = setupHintText();
+  [...elements.playersConfig.querySelectorAll(".remove-player")].forEach((button) => {
+    button.addEventListener("click", (event) => {
+      if (setupPlayers.length <= 3) {
+        return;
+      }
+      syncSetupPlayersFromDom();
+      const removeIndex = Number(event.currentTarget.getAttribute("data-remove-index"));
+      if (!Number.isNaN(removeIndex)) {
+        setupPlayers.splice(removeIndex, 1);
+      }
+      renderPlayerConfigRows();
+    });
+  });
+}
+
+function parsePlayersFromSetup() {
+  syncSetupPlayersFromDom();
+  return [...setupPlayers];
 }
 
 function playerById(id) {
@@ -249,7 +285,13 @@ function announce(message) {
 
 function startGameFromSetup() {
   const players = parsePlayersFromSetup();
-  if (players.length < 3) {
+  if (players.length < 3 || players.length > 8) {
+    elements.setupHint.textContent = "Picante needs 3 to 8 players.";
+    return;
+  }
+  const uniqueNames = new Set(players.map((player) => player.name.toLowerCase()));
+  if (uniqueNames.size !== players.length) {
+    elements.setupHint.textContent = "Player names must be unique.";
     return;
   }
   gameState = createGame(players);
@@ -294,20 +336,21 @@ function handleEndTurn() {
   renderAll();
 }
 
-function initPlayerCount() {
-  elements.playerCount.innerHTML = Array.from({ length: 8 }, (_, index) => {
-    const value = index + 3;
-    const selected = value === 5 ? "selected" : "";
-    return `<option value="${value}" ${selected}>${value}</option>`;
-  }).join("");
-}
-
 function initEvents() {
-  elements.generatePlayers.addEventListener("click", renderPlayerConfigRows);
+  elements.addPlayer.addEventListener("click", () => {
+    if (setupPlayers.length >= 8) {
+      return;
+    }
+    syncSetupPlayersFromDom();
+    setupPlayers.push(buildDefaultPlayer(setupPlayers.length));
+    renderPlayerConfigRows();
+  });
   elements.startGame.addEventListener("click", startGameFromSetup);
   elements.newGame.addEventListener("click", () => {
     gameState = null;
     lastDrinkAlerts = [];
+    setupPlayers = Array.from({ length: 5 }, (_, index) => buildDefaultPlayer(index));
+    renderPlayerConfigRows();
     setScreen("setup");
   });
   elements.drawCard.addEventListener("click", handleDrawCard);
@@ -329,7 +372,7 @@ function initEvents() {
 }
 
 function init() {
-  initPlayerCount();
+  setupPlayers = Array.from({ length: 5 }, (_, index) => buildDefaultPlayer(index));
   renderPlayerConfigRows();
   initEvents();
   setScreen("setup");

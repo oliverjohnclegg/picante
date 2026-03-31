@@ -12,16 +12,18 @@
       <section id="setup-screen" class="screen">
         <div class="panel hero">
           <h1>Picante</h1>
-          <p class="subtitle">One screen. High chaos. Host-controlled penalties.</p>
+          <p class="subtitle">Add players, lock the roster, then launch the game.</p>
         </div>
         <div class="panel">
-          <div class="setup-row">
-            <label for="player-count">Players</label>
-            <select id="player-count"></select>
-            <button id="generate-players" type="button">Generate</button>
+          <div class="setup-header">
+            <h2>Add Players</h2>
+            <p id="setup-hint" class="muted"></p>
           </div>
           <div id="players-config" class="players-config"></div>
-          <button id="start-game" type="button" class="action">Start Game</button>
+          <div class="setup-actions">
+            <button id="add-player" type="button">Add Player</button>
+          </div>
+          <button id="start-game" type="button" class="action sticky-start">Start Game</button>
         </div>
       </section>
 

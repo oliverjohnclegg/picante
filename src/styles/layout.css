@@ -23,6 +23,12 @@
   align-items: end;
 }
 
+.setup-header {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.65rem;
+}
+
 .setup-row label {
   font-size: 0.9rem;
   color: var(--muted);
@@ -36,8 +42,9 @@
 
 .player-config-row {
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr 0.8fr;
+  grid-template-columns: 1.2fr 0.8fr 0.8fr auto;
   gap: 0.6rem;
+  align-items: end;
 }
 
 .player-config-row label {
@@ -47,9 +54,23 @@
   color: var(--muted);
 }
 
+#add-player {
+  width: 100%;
+}
+
+.setup-actions {
+  margin-top: 0.5rem;
+}
+
 #start-game {
   margin-top: 0.9rem;
   width: 100%;
+}
+
+.sticky-start {
+  position: sticky;
+  bottom: 0.5rem;
+  z-index: 5;
 }
 
 .topbar {
@@ -275,6 +296,10 @@
     grid-template-columns: 1fr;
   }
 
+  .sticky-start {
+    bottom: 0.2rem;
+  }
+
   .turn-actions {
     grid-template-columns: 1fr;
   }
@@ -287,5 +312,28 @@
   .turn-panel,
   .log-panel {
     min-height: 260px;
+  }
+}
+
+@media (orientation: landscape) and (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(250px, 0.95fr) minmax(430px, 1.4fr) minmax(260px, 1fr);
+  }
+
+  .turn-panel {
+    min-height: 74vh;
+  }
+
+  .scoreboard-panel,
+  .log-panel {
+    max-height: 74vh;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+  }
+
+  .scoreboard,
+  .event-log {
+    overflow: auto;
   }
 }
