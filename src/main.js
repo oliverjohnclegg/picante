@@ -1,4 +1,4 @@
-import { LEVEL_OPTIONS, SUIT_META } from "/src/game/constants.js";
+import { GAME_MODE_META, LEVEL_OPTIONS, SUIT_META } from "/src/game/constants.js";
 import {
   createGame,
   drawTurn,
@@ -14,6 +14,7 @@ const elements = {
   setupScreen: document.querySelector("#setup-screen"),
   gameScreen: document.querySelector("#game-screen"),
   playerCount: document.querySelector("#player-count"),
+  gameMode: document.querySelector("#game-mode"),
   startGame: document.querySelector("#start-game"),
   playersConfig: document.querySelector("#players-config"),
   newGame: document.querySelector("#new-game"),
@@ -81,7 +82,8 @@ function renderDeckAndTurnMeta() {
   if (!gameState) return;
   const activePlayer = getActivePlayer(gameState);
   const modifierText = gameState.halvedThresholdsActive ? " · Halved" : "";
-  elements.deckMeta.textContent = `Deck ${gameState.deck.length} · Discard ${gameState.discard.length}${modifierText}`;
+  const modeLabel = GAME_MODE_META[gameState.mode]?.label ?? "Picante";
+  elements.deckMeta.textContent = `${modeLabel} · Deck ${gameState.deck.length} · Discard ${gameState.discard.length}${modifierText}`;
   elements.turnMeta.textContent = `${activePlayer.name}'s Turn`;
 }
 
@@ -197,7 +199,8 @@ function announce(message) {
 function startGame() {
   const players = parsePlayersFromSetup();
   if (players.length < 3) return;
-  gameState = createGame(players);
+  const mode = elements.gameMode?.value || "picante";
+  gameState = createGame(players, mode);
   lastDrinkAlerts = [];
   setScreen("game");
   renderAll();
