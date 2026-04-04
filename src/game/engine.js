@@ -76,7 +76,7 @@ function getInitialAllocations(players, suggestedPenalties) {
   return Object.fromEntries(players.map((player) => [player.id, suggestedPenalties[player.id] ?? 0]));
 }
 
-export function createGame(playerConfigs) {
+export function createGame(playerConfigs, mode = "picante") {
   const playersCount = playerConfigs.length;
   const players = playerConfigs.map((config, index) => ({
     id: `p-${index + 1}`,
@@ -92,6 +92,7 @@ export function createGame(playerConfigs) {
 
   return {
     players,
+    mode,
     deck: createShuffledDeck(),
     discard: [],
     turnIndex: 0,
@@ -123,7 +124,7 @@ export function drawTurn(state) {
 
   const drawer = getActivePlayer(state);
   const card = state.deck.pop();
-  const forfeit = createForfeit(card, drawer, state.players);
+  const forfeit = createForfeit(card, drawer, state.players, state.mode);
   const allocations = getInitialAllocations(state.players, forfeit.suggestedPenalties);
   const suggestedTotal = getSuggestedTotal(card, forfeit);
 

@@ -1,4 +1,4 @@
-import { LEVEL_MULTIPLIER, SPICY_QUESTIONS, SUIT_META, THRESHOLD_MATRIX } from "/src/game/constants.js";
+import { LEVEL_MULTIPLIER, SPICY_PLUS_QUESTIONS, SPICY_QUESTIONS, SUIT_META, THRESHOLD_MATRIX } from "/src/game/constants.js";
 import { pickRandom, pickRandomMany } from "/src/game/utils.js";
 
 function getAbvBand(abvPercent) {
@@ -16,6 +16,24 @@ function getAbvBand(abvPercent) {
 
 function getMatrixPlayerCount(playersCount) {
   return playersCount >= 8 ? 8 : Math.max(3, playersCount);
+}
+
+function isSpicyPlusMode(mode) {
+  return mode === "spicy-plus";
+}
+
+function modeText(mode, picanteText, spicyPlusText) {
+  if (isSpicyPlusMode(mode)) {
+    return spicyPlusText;
+  }
+  return picanteText;
+}
+
+function getModeQuestions(mode) {
+  if (isSpicyPlusMode(mode)) {
+    return SPICY_PLUS_QUESTIONS;
+  }
+  return SPICY_QUESTIONS;
 }
 
 function rankToNumber(rank) {
@@ -61,27 +79,43 @@ function createForfeitBase(card) {
   };
 }
 
-function buildHeartsForfeit(card, drawer, players) {
+function buildHeartsForfeit(card, drawer, players, mode) {
   const details = createForfeitBase(card);
   const number = rankToNumber(card.rank);
   const clockwise = getRandomOther(players, drawer.id);
   if (number >= 2) {
-    details.text = `${clockwise?.name ?? "Another player"} asks ${drawer.name} a truth question (not yes/no). If ${drawer.name} answers, the asker takes ${number}. If not, ${drawer.name} takes ${number}.`;
+    details.text = modeText(
+      mode,
+      `${clockwise?.name ?? "Another player"} asks ${drawer.name} a truth question (not yes/no). If ${drawer.name} answers, the asker takes ${number}. If not, ${drawer.name} takes ${number}.`,
+      `${clockwise?.name ?? "Another player"} asks ${drawer.name} a sexual truth question (not yes/no). If ${drawer.name} answers fully, the asker takes ${number}. If not, ${drawer.name} takes ${number}.`,
+    );
     details.suggestedPenalties = { [clockwise?.id ?? drawer.id]: number };
     return details;
   }
   if (card.rank === "K") {
-    details.text = `${clockwise?.name ?? "A player"} asks a deadly truth challenge. Resolve as numbered Hearts, with 15 penalties.`;
+    details.text = modeText(
+      mode,
+      `${clockwise?.name ?? "A player"} asks a deadly truth challenge. Resolve as numbered Hearts, with 15 penalties.`,
+      `${clockwise?.name ?? "A player"} asks an explicit truth challenge. Resolve as numbered Hearts, with 15 penalties.`,
+    );
     details.suggestedPenalties = { [clockwise?.id ?? drawer.id]: 15 };
     return details;
   }
   if (card.rank === "Q") {
-    details.text = `${drawer.name} reveals a spicy secret. If new to everyone, distribute 10. If not, ${drawer.name} takes 10.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} reveals a spicy secret. If new to everyone, distribute 10. If not, ${drawer.name} takes 10.`,
+      `${drawer.name} reveals a sexual secret they have never shared here. If new to everyone, distribute 10. If not, ${drawer.name} takes 10.`,
+    );
     details.suggestedPenalties = { [drawer.id]: 10 };
     return details;
   }
   if (card.rank === "J") {
-    details.text = `${drawer.name} states true/false about themselves. Everyone who guesses wrong takes distributed penalties totaling 10.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} states true/false about themselves. Everyone who guesses wrong takes distributed penalties totaling 10.`,
+      `${drawer.name} states a true/false sexual fact about themselves. Everyone who guesses wrong takes distributed penalties totaling 10.`,
+    );
     details.suggestedPenalties = { [drawer.id]: 0 };
     details.hostNotes.push("Assign penalties to wrong guessers; if all guessed right, put all 10 on drawer.");
     return details;
@@ -92,29 +126,45 @@ function buildHeartsForfeit(card, drawer, players) {
   return details;
 }
 
-function buildDiamondsForfeit(card, drawer, players) {
+function buildDiamondsForfeit(card, drawer, players, mode) {
   const details = createForfeitBase(card);
   const number = rankToNumber(card.rank);
   const counterClockwise = getRandomOther(players, drawer.id);
   if (number >= 2) {
-    details.text = `${counterClockwise?.name ?? "Another player"} gives ${drawer.name} a dare. Success means asker takes ${number}; failure means ${drawer.name} takes ${number}.`;
+    details.text = modeText(
+      mode,
+      `${counterClockwise?.name ?? "Another player"} gives ${drawer.name} a dare. Success means asker takes ${number}; failure means ${drawer.name} takes ${number}.`,
+      `${counterClockwise?.name ?? "Another player"} gives ${drawer.name} a sexual dare. Success means asker takes ${number}; failure means ${drawer.name} takes ${number}.`,
+    );
     details.suggestedPenalties = { [counterClockwise?.id ?? drawer.id]: number };
     return details;
   }
   if (card.rank === "K") {
-    details.text = `Deadly dare variant: resolve as numbered Diamonds but with 15 penalties.`;
+    details.text = modeText(
+      mode,
+      `Deadly dare variant: resolve as numbered Diamonds but with 15 penalties.`,
+      `Explicit dare variant: resolve as numbered Diamonds but with 15 penalties.`,
+    );
     details.suggestedPenalties = { [counterClockwise?.id ?? drawer.id]: 15 };
     return details;
   }
   if (card.rank === "Q") {
     const target = getRandomOther(players, drawer.id);
-    details.text = `${drawer.name} may send a risqué picture to ${target?.name ?? "a player"}. If they refuse, ${drawer.name} takes 10. If they do it, ${target?.name ?? "target"} takes 10.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} may send a risqué picture to ${target?.name ?? "a player"}. If they refuse, ${drawer.name} takes 10. If they do it, ${target?.name ?? "target"} takes 10.`,
+      `${drawer.name} may send a bold spicy picture to ${target?.name ?? "a player"}. If they refuse, ${drawer.name} takes 10. If they do it, ${target?.name ?? "target"} takes 10.`,
+    );
     details.suggestedPenalties = { [drawer.id]: 10 };
     return details;
   }
   if (card.rank === "J") {
     const pair = getRandomTwoOthers(players, drawer.id);
-    details.text = `${drawer.name} chooses two players for a shared dare (${pair.map((p) => p.name).join(" & ")}). If they fail, each takes 5. If they succeed, ${drawer.name} takes 10.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} chooses two players for a shared dare (${pair.map((p) => p.name).join(" & ")}). If they fail, each takes 5. If they succeed, ${drawer.name} takes 10.`,
+      `${drawer.name} chooses two players for a shared sensual dare (${pair.map((p) => p.name).join(" & ")}). If they fail, each takes 5. If they succeed, ${drawer.name} takes 10.`,
+    );
     if (pair.length === 2) {
       details.suggestedPenalties = { [pair[0].id]: 5, [pair[1].id]: 5 };
     } else {
@@ -128,13 +178,17 @@ function buildDiamondsForfeit(card, drawer, players) {
   return details;
 }
 
-function buildSpadesForfeit(card, drawer, players) {
+function buildSpadesForfeit(card, drawer, players, mode) {
   const details = createForfeitBase(card);
   const number = rankToNumber(card.rank);
   if (number >= 2) {
     const self = Math.ceil(number / 2);
     const rest = number - self;
-    details.text = `${drawer.name} drinks ${self} penalties and distributes ${rest} among the group.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} drinks ${self} penalties and distributes ${rest} among the group.`,
+      `${drawer.name} drinks ${self} penalties and distributes ${rest} among the group.`,
+    );
     details.suggestedPenalties = { [drawer.id]: self };
     return details;
   }
@@ -146,13 +200,21 @@ function buildSpadesForfeit(card, drawer, players) {
   }
   if (card.rank === "Q") {
     const target = getRandomOther(players, drawer.id);
-    details.text = `${drawer.name} chooses ${target?.name ?? "someone"} for a kiss challenge. Resolve outcomes manually; total swing is 10 penalties.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} chooses ${target?.name ?? "someone"} for a kiss challenge. Resolve outcomes manually; total swing is 10 penalties.`,
+      `${drawer.name} chooses ${target?.name ?? "someone"} for a heated makeout challenge. Resolve outcomes manually; total swing is 10 penalties.`,
+    );
     details.suggestedPenalties = { [drawer.id]: 5 };
     return details;
   }
   if (card.rank === "J") {
     const pair = getRandomTwoOthers(players, drawer.id);
-    details.text = `${drawer.name} picks ${pair.map((p) => p.name).join(" & ")} for rock-paper-scissors. Loser takes 10 penalties.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} picks ${pair.map((p) => p.name).join(" & ")} for rock-paper-scissors. Loser takes 10 penalties.`,
+      `${drawer.name} picks ${pair.map((p) => p.name).join(" & ")} for a tease-off vote. Loser takes 10 penalties.`,
+    );
     details.suggestedPenalties = pair.length ? { [pair[0].id]: 10 } : { [drawer.id]: 10 };
     return details;
   }
@@ -163,31 +225,43 @@ function buildSpadesForfeit(card, drawer, players) {
   return details;
 }
 
-function buildClubsForfeit(card, drawer, players) {
+function buildClubsForfeit(card, drawer, players, mode) {
   const details = createForfeitBase(card);
   const number = rankToNumber(card.rank);
   if (number >= 2) {
     const voted = getRandomOther(players, drawer.id) ?? drawer;
-    const question = pickRandom(SPICY_QUESTIONS);
+    const question = pickRandom(getModeQuestions(mode));
     details.text = `${drawer.name} asks: "${question}" Group votes. ${voted.name} gets penalties worth ${number} to distribute.`;
     details.suggestedPenalties = { [voted.id]: number };
     return details;
   }
   if (card.rank === "K") {
     const target = getRandomOther(players, drawer.id);
-    details.text = `${target?.name ?? "A player"} faces ${drawer.name} in Bullshit. Loser takes 15 penalties.`;
+    details.text = modeText(
+      mode,
+      `${target?.name ?? "A player"} faces ${drawer.name} in Bullshit. Loser takes 15 penalties.`,
+      `${target?.name ?? "A player"} faces ${drawer.name} in a dirty bluff showdown. Loser takes 15 penalties.`,
+    );
     details.suggestedPenalties = { [drawer.id]: 15 };
     return details;
   }
   if (card.rank === "Q") {
     const target = getRandomOther(players, drawer.id);
-    details.text = `${drawer.name} and ${target?.name ?? "opponent"} play a strip-style chicken challenge; first to back out takes 10.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} and ${target?.name ?? "opponent"} play a strip-style chicken challenge; first to back out takes 10.`,
+      `${drawer.name} and ${target?.name ?? "opponent"} play a sexual tension chicken challenge; first to back out takes 10.`,
+    );
     details.suggestedPenalties = { [drawer.id]: 10 };
     return details;
   }
   if (card.rank === "J") {
     const target = getRandomOther(players, drawer.id);
-    details.text = `${drawer.name} picks ${target?.name ?? "a player"} and assigns any Queen forfeit to them.`;
+    details.text = modeText(
+      mode,
+      `${drawer.name} picks ${target?.name ?? "a player"} and assigns any Queen forfeit to them.`,
+      `${drawer.name} picks ${target?.name ?? "a player"} and assigns any Queen forfeit to them with no edits.`,
+    );
     details.suggestedPenalties = { [target?.id ?? drawer.id]: 10 };
     return details;
   }
@@ -210,18 +284,18 @@ function buildJokerForfeit(drawer) {
   };
 }
 
-export function createForfeit(card, drawer, players) {
+export function createForfeit(card, drawer, players, mode = "picante") {
   if (card.suit === "joker") {
     return buildJokerForfeit(drawer);
   }
   if (card.suit === "hearts") {
-    return buildHeartsForfeit(card, drawer, players);
+    return buildHeartsForfeit(card, drawer, players, mode);
   }
   if (card.suit === "diamonds") {
-    return buildDiamondsForfeit(card, drawer, players);
+    return buildDiamondsForfeit(card, drawer, players, mode);
   }
   if (card.suit === "spades") {
-    return buildSpadesForfeit(card, drawer, players);
+    return buildSpadesForfeit(card, drawer, players, mode);
   }
-  return buildClubsForfeit(card, drawer, players);
+  return buildClubsForfeit(card, drawer, players, mode);
 }
