@@ -8,18 +8,11 @@ export const ATTRACTION_WEIGHTS = {
 
 export function lowPenWeight(candidate: Player, candidates: Player[]): number {
   const nonDrawer = candidates.filter((c) => c.id !== candidate.id);
-  const maxRaw = nonDrawer.reduce(
-    (acc, c) => Math.max(acc, c.rawPenalties),
-    0,
-  );
+  const maxRaw = nonDrawer.reduce((acc, c) => Math.max(acc, c.rawPenalties), 0);
   return maxRaw - candidate.rawPenalties + 1;
 }
 
-export function attractionWeight(
-  drawer: Player,
-  candidate: Player,
-  mode: TargetingMode,
-): number {
+export function attractionWeight(drawer: Player, candidate: Player, mode: TargetingMode): number {
   if (mode === 'any') return 1.0;
   const drawerInto = drawer.attractedTo.includes(candidate.gender);
   const candidateInto = candidate.attractedTo.includes(drawer.gender);
@@ -28,10 +21,7 @@ export function attractionWeight(
   return ATTRACTION_WEIGHTS.neither;
 }
 
-export function eligibleCandidates(
-  drawer: Player,
-  players: Player[],
-): Player[] {
+export function eligibleCandidates(drawer: Player, players: Player[]): Player[] {
   return players.filter((p) => p.id !== drawer.id && p.status === 'active');
 }
 

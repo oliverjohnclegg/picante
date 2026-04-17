@@ -1,10 +1,4 @@
-import {
-  buildDeck,
-  buildShuffledDeck,
-  cardPenaltyValue,
-  drawCard,
-  shuffleDeck,
-} from '@game/deck';
+import { buildDeck, buildShuffledDeck, cardPenaltyValue, drawCard, shuffleDeck } from '@game/deck';
 
 describe('buildDeck', () => {
   it('produces 52 unique cards', () => {

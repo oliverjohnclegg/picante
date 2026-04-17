@@ -90,7 +90,7 @@ flowchart LR
     DeckCheck -->|Yes| EndGame[End screen + leaderboard]
 ```
 
-- 52-card deck, one pass, clockwise turns
+- 52-card deck, one pass, fixed rotation turn order
 - Game ends when deck is empty (no reshuffle in v1)
 - Expected session length: 45–90 min depending on player count
 - **Core rule.** Drinking is *never* a forfeit action. Forfeits deal in penalties
@@ -185,9 +185,9 @@ is always the value above, never re-specified per card.
 
 | Suit       | Spanish   | Theme           | Numbered (2–10)                                                                                                                       | J                                                                                                                    | Q                                                                                                                                                           | K                                                                                                      |
 | ---------- | --------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| ♥ Hearts   | Secretos  | Truths (self)   | Counter-clockwise player asks you a truth (not yes/no). Answer → they take penalty. Cop-out → you take it.                           | True/false statement about yourself; distribute penalty among wrong-guessers (take it if *everyone* was correct).    | Reveal a spicy secret about yourself; if news to everyone, distribute the penalty; if not, you take it.                                                     | Counter-clockwise asks a darker / more intimate truth. Same resolution as numbered.                     |
-| ♦ Diamonds | Riesgos   | Dares           | Clockwise player dares you. Do it → they take penalty. Cop-out → you take it.                                                        | Dare a random other player *(§4.6.a bias-weighted)*. Do it → they take penalty. Cop-out → you take it.               | Send a risqué message to a random other player *(bias-weighted, `physical`)*. Send → they take penalty. Cop-out → you take it.                              | Clockwise gives a significantly harder dare. Same resolution, higher stakes.                            |
-| ♠ Spades   | Sorbo     | Shared pain     | "Who is the most X?" group vote. Drawer and most-voted **each** take the penalty.                                                     | Pick a random other player *(bias-weighted, any)*. You both take the penalty.                                         | A random other player *(bias-weighted, `physical`)* is invited to a kiss with the drawer. Both kiss → distribute penalty among the rest. Both decline → each takes half (rounded up). One declines → they take all. | Pick a random other player *(bias-weighted, any)*. You both take the penalty.                           |
+| ♥ Hearts   | Secretos  | Truths (self)   | A random other player *(bias-weighted, any)* asks you a truth (not yes/no). Answer → they take penalty. Cop-out → you take it.       | True/false statement about yourself; distribute penalty among wrong-guessers (take it if *everyone* was correct).    | Reveal a spicy secret about yourself; if news to everyone, distribute the penalty; if not, you take it.                                                     | A random other player *(bias-weighted, any)* asks a darker / more intimate truth. Same resolution as numbered. |
+| ♦ Diamonds | Riesgos   | Dares           | A random other player *(bias-weighted, any)* dares you. Do it → they take penalty. Cop-out → you take it.                            | Dare a random other player *(§4.6.a bias-weighted)*. Do it → they take penalty. Cop-out → you take it.               | Send a risqué message to a random other player *(bias-weighted, `physical`)*. Send → they take penalty. Cop-out → you take it.                              | A random other player *(bias-weighted, any)* gives a significantly harder dare. Same resolution, higher stakes. |
+| ♠ Spades   | Sorbo     | Shared pain     | "Who is the most X?" group vote. **Split the penalty**: drawer auto-takes `ceil(N/2)`, chosen most-voted player takes `floor(N/2)`. | Pick a random other player *(bias-weighted, any)*. You both take the penalty.                                         | A random other player *(bias-weighted, `physical`)* is invited to a kiss with the drawer. Both kiss → distribute penalty among the rest. Both decline → each takes half (rounded up). One declines → they take all. | Pick a random other player *(bias-weighted, any)*. You both take the penalty.                           |
 | ♣ Clubs    | Locura    | Mini-games      | Each of 2–10 is a canned mini-game (§4.4.a). Loser takes the penalty.                                                                | **Drawer's Challenge** — drawer invents a short physical / trivia / dexterity challenge and picks any player to attempt it. Complete → drawer takes penalty. Fail → they take penalty. | **1v1 Rock-Paper-Scissors** — drawer picks any player. One round RPS. Loser takes the penalty.                                                              | **Picante Roulette** — on "3", every player (including drawer) simultaneously points at one other. Most-pointed-at takes penalty; ties broken by drawer. |
 
 Notes on the rewrites:
@@ -332,7 +332,50 @@ reflects the current roster — no special handling needed.
 
 ## 5. Game content
 
-### 5.1 Modes
+### 5.1 Rules for forfeits (content invariants)
+
+These are **hard invariants** every forfeit in every pack must satisfy. They're
+enforceable in `packLoader.ts` validation where mechanical, and enforced by
+content review where subjective.
+
+1. **Forfeits are guidelines, not scripts.** Text provides the *floor* — a
+   direction and (for higher-value cards) a difficulty assertion — but never
+   dictates an exact action. The group decides the specifics. Spicier modes
+   (Diablo+) may raise the floor's intensity, but must still delegate the
+   concrete action to the group. Mini-games (Clubs 2–Q) are an explicit
+   exception: the mini-game *is* the forfeit, so its structure is fixed.
+2. **Every card allocates at least one penalty.** No card may resolve with
+   zero penalties applied. "Everyone off free" is not a legal branch. Design
+   a forfeit so at least one named path always ends in penalty allocation.
+3. **No multi-turn forfeits.** A card's effect must resolve entirely within
+   its own turn. The *only* exception is strictly passive states that require
+   zero ongoing thought from the player (e.g., "lose a layer of clothes until
+   end of game"). Active obligations that span turns (thumb-master, rule-master,
+   sentries) are forbidden.
+4. **Low-friction floor.** Forfeit guidelines must not mandate long-duration
+   actions or significant physical movement. The group can escalate voluntarily;
+   the card must not. Assume hosts are playing in confined social spaces.
+5. **Always a cop-out.** No player is ever forced to perform a forfeit. Every
+   non-automatic card must provide an explicit "cop-out → player takes the
+   penalty" branch. The cop-out is the safety valve that keeps participation
+   consent-based.
+6. **Forfeits never command drinking.** Drinking is the exclusive consequence
+   of `rawPenalties` crossing a threshold (§4.7). No forfeit may instruct
+   anyone to take a sip, a shot, or any other drink as part of its action.
+   Drinking is earned, not assigned.
+7. **Fixed penalty-by-rank.** Every card's total distributed penalty equals
+   its rank value:
+   - **2–10** → penalty equals the card's numeric value.
+   - **J, Q** → penalty is 10.
+   - **K** → penalty is 15.
+   - **A** → governed by the Ace-specific mechanic (§4.3); exempt from this
+     rule.
+
+   "Total distributed" means the sum of penalties applied across all affected
+   players in any branch. A card that splits or double-hits still sums to its
+   rank value.
+
+### 5.2 Modes
 
 - **Tradicional (free).** Baseline forfeits, flirtatious not explicit, aligns
   with the current forfeit wording.
@@ -340,7 +383,7 @@ reflects the current roster — no special handling needed.
   swapped for noticeably spicier, more sexual, more confrontational forfeit
   language. Same card structure, same economy.
 
-### 5.2 Forfeit content architecture
+### 5.3 Forfeit content architecture
 
 Pack-based JSON, designed to be hot-swappable so v2 can ship remote packs without
 refactoring:
@@ -360,7 +403,7 @@ Each forfeit entry:
 type ForfeitTemplate = {
     suit: 'hearts' | 'diamonds' | 'spades' | 'clubs';
     value: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 'J' | 'Q' | 'K' | 'A';
-    text: string;              // supports {{drawer}}, {{cw}}, {{ccw}}, {{biasedRandom}} tokens
+    text: string;              // supports {{drawer}}, {{biasedRandom}} tokens
     penalty: 'cardValue' | 'cardValueHalf' | number;  // usually derived from value per §4.4
     targetingMode: 'any' | 'physical';   // drives §4.6.a attractionWeight; defaults to 'any'
     miniGame?: MiniGameId;     // clubs numbered only
@@ -370,7 +413,7 @@ type ForfeitTemplate = {
 At runtime, token substitution is done by `ForfeitRenderer` given the current
 `GameState`.
 
-### 5.3 Pack catalogue roadmap
+### 5.4 Pack catalogue roadmap
 
 - v1: Tradicional (free), Diablo ($4.99)
 - v2+: Couples Pack, Bachelorette Pack, Pride Pack, Cursed Christmas, Stag-Do
@@ -594,7 +637,7 @@ Max ~100 lines per file — components split aggressively. Pure game logic
 ```ts
 type GameState = {
     mode: 'tradicional' | 'diablo';
-    players: Player[];                 // ordered clockwise
+    players: Player[];                 // turn order (index-based rotation)
     currentPlayerIndex: number;
     deck: Card[];                      // remaining, in draw order
     drawnCard: Card | null;

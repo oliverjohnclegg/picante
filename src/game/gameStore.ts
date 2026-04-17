@@ -1,22 +1,11 @@
 import { create } from 'zustand';
-import type {
-  Card,
-  ForfeitTemplate,
-  GameMode,
-  GameState,
-  Player,
-  PlayerId,
-} from '@game/types';
-import {
-  applyPenalties,
-  computeThreshold,
-  recomputePlayerThresholds,
-} from '@game/penaltyModel';
+import type { Card, ForfeitTemplate, GameMode, GameState, Player, PlayerId } from '@game/types';
+import { applyPenalties, computeThreshold, recomputePlayerThresholds } from '@game/penaltyModel';
 import { buildShuffledDeck, drawCard } from '@game/deck';
 import { resolveAce } from '@game/aces';
 import { findForfeit, getPack } from '@content/packLoader';
 import { pickBiasedRandom } from '@game/targeting';
-import { neighbour, renderForfeitText, resolvePenalty } from '@game/forfeitRenderer';
+import { renderForfeitText, resolvePenalty } from '@game/forfeitRenderer';
 import { makePlayer, type PlayerDraft } from '@game/playerFactory';
 import { sessionStore } from '@game/persistence';
 
@@ -24,8 +13,6 @@ export type ResolvedForfeit = {
   template: ForfeitTemplate;
   renderedText: string;
   penaltyAmount: number;
-  cwPlayer: Player;
-  ccwPlayer: Player;
   biasedRandomPlayer: Player | null;
 };
 
@@ -40,9 +27,7 @@ type Actions = {
   removePlayer: (id: PlayerId) => void;
   updatePlayer: (
     id: PlayerId,
-    updates: Partial<
-      Pick<Player, 'name' | 'abv' | 'difficulty' | 'gender' | 'attractedTo'>
-    >,
+    updates: Partial<Pick<Player, 'name' | 'abv' | 'difficulty' | 'gender' | 'attractedTo'>>,
   ) => void;
   hydrateFromSnapshot: (state: GameState) => void;
   endGame: () => void;
@@ -92,15 +77,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     const pack = getPack(state.mode);
     const template = findForfeit(pack, card.suit, card.value);
-    const cwPlayer = neighbour(state.players, drawerIndex, 'cw');
-    const ccwPlayer = neighbour(state.players, drawerIndex, 'ccw');
     const biasedRandomPlayer = needsBiased(template)
       ? pickBiasedRandom(drawer, state.players, template.targetingMode)
       : null;
     const renderedText = renderForfeitText(template, {
       drawer,
-      cw: cwPlayer,
-      ccw: ccwPlayer,
       biasedRandom: biasedRandomPlayer,
     });
     const penaltyAmount = resolvePenalty(card.value, template.penalty);
@@ -112,8 +93,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
       template,
       renderedText,
       penaltyAmount,
-      cwPlayer,
-      ccwPlayer,
       biasedRandomPlayer,
     };
   },
@@ -157,10 +136,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const state = get();
     if (state.players.length === 0) return;
     const next = findNextActiveIndex(state.players, state.currentPlayerIndex);
+    const keepModal = state.pendingShotQueue.length > 0 ? state.pendingModal : null;
     set({
       currentPlayerIndex: next,
       drawnCard: null,
-      pendingModal: null,
+      pendingModal: keepModal,
     });
     persistSnapshot();
   },
@@ -218,10 +198,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     nextIndex = findNextActiveIndex(rebalanced, nextIndex - 1);
     set({
       players: rebalanced,
-      removedPlayers: [
-        ...state.removedPlayers,
-        { ...removed, status: 'removed' },
-      ],
+      removedPlayers: [...state.removedPlayers, { ...removed, status: 'removed' }],
       currentPlayerIndex: nextIndex,
     });
     persistSnapshot();
@@ -234,22 +211,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const next = state.players.map((p) => {
       if (p.id !== id) return p;
       const merged = { ...p, ...updates };
-      const newThreshold = computeThreshold(
-        merged.abv,
-        activeCount,
-        merged.difficulty,
-      );
+      const newThreshold = computeThreshold(merged.abv, activeCount, merged.difficulty);
       const rebalanced = { ...merged, threshold: newThreshold };
       if (rebalanced.penaltiesSinceLastShot >= newThreshold) {
-        const overdueShots = Math.floor(
-          rebalanced.penaltiesSinceLastShot / newThreshold,
-        );
+        const overdueShots = Math.floor(rebalanced.penaltiesSinceLastShot / newThreshold);
         queue.push({ playerId: p.id, shots: overdueShots });
         return {
           ...rebalanced,
           shotsTaken: rebalanced.shotsTaken + overdueShots,
-          penaltiesSinceLastShot:
-            rebalanced.penaltiesSinceLastShot % newThreshold,
+          penaltiesSinceLastShot: rebalanced.penaltiesSinceLastShot % newThreshold,
         };
       }
       return rebalanced;

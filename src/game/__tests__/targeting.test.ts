@@ -35,10 +35,7 @@ describe('lowPenWeight', () => {
   });
 
   it('never returns zero (leader still eligible)', () => {
-    const candidates = [
-      mk({ id: 'a', rawPenalties: 10 }),
-      mk({ id: 'b', rawPenalties: 10 }),
-    ];
+    const candidates = [mk({ id: 'a', rawPenalties: 10 }), mk({ id: 'b', rawPenalties: 10 })];
     expect(lowPenWeight(candidates[0]!, candidates)).toBeGreaterThan(0);
   });
 });
@@ -62,22 +59,16 @@ describe('attractionWeight', () => {
   it('physical + no attraction (both asexual) -> 0.3 (still non-zero)', () => {
     const asexA = mk({ id: 'ax1', gender: 'man', attractedTo: [] });
     const asexB = mk({ id: 'ax2', gender: 'woman', attractedTo: [] });
-    expect(attractionWeight(asexA, asexB, 'physical')).toBe(
-      ATTRACTION_WEIGHTS.neither,
-    );
+    expect(attractionWeight(asexA, asexB, 'physical')).toBe(ATTRACTION_WEIGHTS.neither);
   });
 
   it('physical + asymmetric one-way -> 1.0', () => {
-    expect(attractionWeight(straightMan, gayMan, 'physical')).toBe(
-      ATTRACTION_WEIGHTS.oneSided,
-    );
+    expect(attractionWeight(straightMan, gayMan, 'physical')).toBe(ATTRACTION_WEIGHTS.oneSided);
   });
 
   it('physical + one-sided -> 1.0', () => {
     const bi = mk({ id: 'bi', gender: 'woman', attractedTo: ['man', 'woman'] });
-    expect(attractionWeight(straightMan, bi, 'physical')).toBe(
-      ATTRACTION_WEIGHTS.mutual,
-    );
+    expect(attractionWeight(straightMan, bi, 'physical')).toBe(ATTRACTION_WEIGHTS.mutual);
     const outcome = attractionWeight(gayMan, bi, 'physical');
     expect(outcome).toBe(ATTRACTION_WEIGHTS.oneSided);
   });

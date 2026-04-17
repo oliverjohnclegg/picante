@@ -1,21 +1,7 @@
 import type { Card, CardValue, Suit } from '@game/types';
 
 export const SUITS: readonly Suit[] = ['hearts', 'diamonds', 'spades', 'clubs'];
-export const VALUES: readonly CardValue[] = [
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  'J',
-  'Q',
-  'K',
-  'A',
-];
+export const VALUES: readonly CardValue[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
 
 export function buildDeck(): Card[] {
   const deck: Card[] = [];

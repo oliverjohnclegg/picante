@@ -62,12 +62,7 @@ describe('resolveAce', () => {
 
   it('stacks drawer surcharge when drawer is in the target set', () => {
     const drawerOnTop = mkPlayer('drawer', 30);
-    const list: Player[] = [
-      drawerOnTop,
-      mkPlayer('a', 0),
-      mkPlayer('b', 5),
-      mkPlayer('c', 10),
-    ];
+    const list: Player[] = [drawerOnTop, mkPlayer('a', 0), mkPlayer('b', 5), mkPlayer('c', 10)];
     const out = resolveAce('hearts', drawerOnTop, list);
     const drawerEntry = out.find((a) => a.playerId === 'drawer')!;
     expect(drawerEntry.penalties).toBe(15 + DRAWER_ACE_SURCHARGE);

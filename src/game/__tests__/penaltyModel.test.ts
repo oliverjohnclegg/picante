@@ -1,6 +1,7 @@
 import {
   applyPenalties,
   computeThreshold,
+  rawPenaltyProgressRatio,
   recomputePlayerThresholds,
   shotProgressRatio,
 } from '@game/penaltyModel';
@@ -130,5 +131,16 @@ describe('shotProgressRatio', () => {
   });
   it('clamps at 1', () => {
     expect(shotProgressRatio(makePlayer({ penaltiesSinceLastShot: 100 }))).toBe(1);
+  });
+});
+
+describe('rawPenaltyProgressRatio', () => {
+  it('scales by max among active', () => {
+    expect(rawPenaltyProgressRatio(25, 100)).toBe(0.25);
+    expect(rawPenaltyProgressRatio(100, 100)).toBe(1);
+  });
+  it('uses denominator at least 1 when max is 0', () => {
+    expect(rawPenaltyProgressRatio(0, 0)).toBe(0);
+    expect(rawPenaltyProgressRatio(5, 0)).toBe(1);
   });
 });

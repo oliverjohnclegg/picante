@@ -1,8 +1,4 @@
-import {
-  neighbour,
-  renderForfeitText,
-  resolvePenalty,
-} from '@game/forfeitRenderer';
+import { renderForfeitText, resolvePenalty } from '@game/forfeitRenderer';
 import type { ForfeitTemplate, Player } from '@game/types';
 
 const mk = (id: string, name: string = id): Player => ({
@@ -19,32 +15,20 @@ const mk = (id: string, name: string = id): Player => ({
   status: 'active',
 });
 
-describe('neighbour', () => {
-  const players = [mk('a'), mk('b'), mk('c'), mk('d')];
-  it('cw at end wraps to head', () => {
-    expect(neighbour(players, 3, 'cw').id).toBe('a');
-  });
-  it('ccw at head wraps to end', () => {
-    expect(neighbour(players, 0, 'ccw').id).toBe('d');
-  });
-});
-
 describe('renderForfeitText', () => {
-  it('substitutes all tokens', () => {
+  it('substitutes drawer and biasedRandom tokens', () => {
     const template: ForfeitTemplate = {
       suit: 'hearts',
       value: 5,
-      text: '{{ccw}} asks {{drawer}} a question. {{biasedRandom}} watches.',
+      text: '{{biasedRandom}} asks {{drawer}} a question.',
       penalty: 'cardValue',
       targetingMode: 'any',
     };
     const result = renderForfeitText(template, {
       drawer: mk('d', 'Drake'),
-      cw: mk('c', 'Clara'),
-      ccw: mk('e', 'Elena'),
       biasedRandom: mk('b', 'Bea'),
     });
-    expect(result).toBe('Elena asks Drake a question. Bea watches.');
+    expect(result).toBe('Bea asks Drake a question.');
   });
 
   it('renders ??? for missing biasedRandom', () => {
@@ -57,8 +41,6 @@ describe('renderForfeitText', () => {
     };
     const result = renderForfeitText(template, {
       drawer: mk('d', 'Drake'),
-      cw: mk('c', 'Clara'),
-      ccw: mk('e', 'Elena'),
       biasedRandom: null,
     });
     expect(result).toBe('Drake dares ???.');

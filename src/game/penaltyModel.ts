@@ -19,18 +19,11 @@ export function computePlayerCountMultiplier(numPlayers: number): number {
   return REFERENCE_PLAYER_COUNT / safePlayers;
 }
 
-export function computeThreshold(
-  abv: number,
-  numPlayers: number,
-  difficulty: Difficulty,
-): number {
+export function computeThreshold(abv: number, numPlayers: number, difficulty: Difficulty): number {
   const base = computeAbvBase(abv);
   const playerCountMultiplier = computePlayerCountMultiplier(numPlayers);
   const difficultyMultiplier = DIFFICULTY_MULTIPLIER[difficulty];
-  return Math.max(
-    1,
-    Math.round(base * playerCountMultiplier * difficultyMultiplier),
-  );
+  return Math.max(1, Math.round(base * playerCountMultiplier * difficultyMultiplier));
 }
 
 export type ApplyPenaltiesResult = {
@@ -38,10 +31,7 @@ export type ApplyPenaltiesResult = {
   pendingShots: number;
 };
 
-export function applyPenalties(
-  player: Player,
-  penalties: number,
-): ApplyPenaltiesResult {
+export function applyPenalties(player: Player, penalties: number): ApplyPenaltiesResult {
   if (penalties <= 0) return { player, pendingShots: 0 };
   const rawPenalties = player.rawPenalties + penalties;
   const progressed = player.penaltiesSinceLastShot + penalties;
@@ -59,10 +49,7 @@ export function applyPenalties(
   };
 }
 
-export function recomputePlayerThresholds(
-  players: Player[],
-  numPlayers: number,
-): Player[] {
+export function recomputePlayerThresholds(players: Player[], numPlayers: number): Player[] {
   return players.map((p) => {
     if (p.status === 'removed') return p;
     const newThreshold = computeThreshold(p.abv, numPlayers, p.difficulty);
@@ -73,4 +60,9 @@ export function recomputePlayerThresholds(
 export function shotProgressRatio(player: Player): number {
   const safeThreshold = Math.max(1, player.threshold);
   return Math.min(1, player.penaltiesSinceLastShot / safeThreshold);
+}
+
+export function rawPenaltyProgressRatio(rawPenalties: number, maxRawAmongActive: number): number {
+  const denom = Math.max(1, maxRawAmongActive);
+  return Math.min(1, Math.max(0, rawPenalties / denom));
 }

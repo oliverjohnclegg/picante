@@ -15,10 +15,7 @@ function sortedByRawPenalties(players: Player[], ascending: boolean): Player[] {
   });
 }
 
-function topThreeAssignments(
-  ordered: Player[],
-  label: (rank: number) => string,
-): AceAssignment[] {
+function topThreeAssignments(ordered: Player[], label: (rank: number) => string): AceAssignment[] {
   const amounts = [15, 10, 5];
   return ordered.slice(0, 3).map((p, idx) => ({
     playerId: p.id,
@@ -41,24 +38,16 @@ function singleAssignmentForSwing(
   return { playerId: target.id, penalties: penalty, reason };
 }
 
-export function resolveAce(
-  suit: Suit,
-  drawer: Player,
-  players: Player[],
-): AceAssignment[] {
+export function resolveAce(suit: Suit, drawer: Player, players: Player[]): AceAssignment[] {
   const active = players.filter((p) => p.status === 'active');
   const assignments: AceAssignment[] = [];
 
   if (suit === 'spades') {
     const lowest = sortedByRawPenalties(active, true);
-    assignments.push(
-      ...topThreeAssignments(lowest, (rank) => `sober-rank-${rank}`),
-    );
+    assignments.push(...topThreeAssignments(lowest, (rank) => `sober-rank-${rank}`));
   } else if (suit === 'hearts') {
     const highest = sortedByRawPenalties(active, false);
-    assignments.push(
-      ...topThreeAssignments(highest, (rank) => `loud-rank-${rank}`),
-    );
+    assignments.push(...topThreeAssignments(highest, (rank) => `loud-rank-${rank}`));
   } else if (suit === 'diamonds') {
     const swing = singleAssignmentForSwing(active, true, 'risk-equaliser');
     if (swing) assignments.push(swing);

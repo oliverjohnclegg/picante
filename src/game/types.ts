@@ -1,19 +1,6 @@
 export type Suit = 'hearts' | 'diamonds' | 'spades' | 'clubs';
 
-export type CardValue =
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
-  | 'J'
-  | 'Q'
-  | 'K'
-  | 'A';
+export type CardValue = 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 'J' | 'Q' | 'K' | 'A';
 
 export type Card = {
   suit: Suit;
@@ -59,12 +46,15 @@ export type MiniGameId =
 
 export type PenaltySpec = 'cardValue' | 'cardValueHalf' | number;
 
+export type ResolutionMode = 'choose' | 'distribute' | 'auto' | 'splitDrawerChoose';
+
 export type ForfeitTemplate = {
   suit: Suit;
   value: CardValue;
   text: string;
   penalty: PenaltySpec;
   targetingMode: TargetingMode;
+  resolution?: ResolutionMode;
   miniGame?: MiniGameId;
 };
 
