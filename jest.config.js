@@ -1,8 +1,12 @@
 /** @type {import('jest').Config} */
 module.exports = {
-  preset: 'jest-expo',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.test.tsx'],
   testPathIgnorePatterns: ['/node_modules/', '/.expo/', '/dist/'],
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.jest.json' }],
+  },
   moduleNameMapper: {
     '^@game/(.*)$': '<rootDir>/src/game/$1',
     '^@content/(.*)$': '<rootDir>/src/content/$1',
@@ -16,8 +20,5 @@ module.exports = {
     'src/content/**/*.ts',
     '!**/*.d.ts',
     '!**/__tests__/**',
-  ],
-  transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|moti|@react-native-async-storage)/)',
   ],
 };
