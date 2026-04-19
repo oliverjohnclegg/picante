@@ -4,10 +4,12 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.test.tsx'],
   testPathIgnorePatterns: ['/node_modules/', '/.expo/', '/dist/'],
+  clearMocks: true,
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.jest.json' }],
   },
   moduleNameMapper: {
+    '^@app/(.*)$': '<rootDir>/app/$1',
     '^@game/(.*)$': '<rootDir>/src/game/$1',
     '^@content/(.*)$': '<rootDir>/src/content/$1',
     '^@ui/(.*)$': '<rootDir>/src/ui/$1',
@@ -18,7 +20,21 @@ module.exports = {
   collectCoverageFrom: [
     'src/game/**/*.ts',
     'src/content/**/*.ts',
+    'src/platform/**/*.ts',
+    'src/i18n/**/*.ts',
+    'src/ui/theme.ts',
+    'src/ui/components/modalDefaults.ts',
+    'src/ui/useFonts.ts',
     '!**/*.d.ts',
     '!**/__tests__/**',
   ],
+  coverageReporters: ['text', 'lcov', 'cobertura'],
+  coverageThreshold: {
+    global: {
+      statements: 90,
+      branches: 82,
+      functions: 90,
+      lines: 90,
+    },
+  },
 };
