@@ -82,54 +82,56 @@ export default function RosterDrawer({ onClose }: Props) {
 
   return (
     <>
-      <Modal
-        visible
-        transparent
-        animationType={isLandscape ? 'fade' : 'slide'}
-        supportedOrientations={MODAL_ALL_ORIENTATIONS}
-      >
-        <View style={[styles.backdrop, isLandscape && styles.backdropLandscape]}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-          <View style={[styles.sheet, isLandscape && styles.sheetLandscape]}>
-            <View style={styles.header}>
-              <Text variant="displayLG">{strings.game.roster}</Text>
-              <Pressable onPress={onClose}>
-                <Text variant="displayMD" color={colors.textMuted}>
-                  ✕
-                </Text>
-              </Pressable>
-            </View>
-            <FlatList
-              data={players}
-              keyExtractor={(p) => p.id}
-              style={isLandscape ? styles.listLandscape : styles.listPortrait}
-              contentContainerStyle={{ gap: spacing.sm, paddingVertical: spacing.md }}
-              renderItem={({ item }) => (
-                <PlayerChip
-                  player={item}
-                  subtitle={`${Math.round(item.abv * 100)}% · ${item.difficulty}`}
-                  onPress={() => openEdit(item.id)}
-                />
-              )}
-            />
-            {players.length < MAX_PLAYERS ? (
-              <Button
-                label={`+ ${strings.setup.addPlayer}`}
-                variant="ghost"
-                fullWidth
-                onPress={openAdd}
+      {!formOpen ? (
+        <Modal
+          visible
+          transparent
+          animationType={isLandscape ? 'fade' : 'slide'}
+          supportedOrientations={MODAL_ALL_ORIENTATIONS}
+        >
+          <View style={[styles.backdrop, isLandscape && styles.backdropLandscape]}>
+            <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
+            <View style={[styles.sheet, isLandscape && styles.sheetLandscape]}>
+              <View style={styles.header}>
+                <Text variant="displayLG">{strings.game.roster}</Text>
+                <Pressable onPress={onClose}>
+                  <Text variant="displayMD" color={colors.textMuted}>
+                    ✕
+                  </Text>
+                </Pressable>
+              </View>
+              <FlatList
+                data={players}
+                keyExtractor={(p) => p.id}
+                style={isLandscape ? styles.listLandscape : styles.listPortrait}
+                contentContainerStyle={{ gap: spacing.sm, paddingVertical: spacing.md }}
+                renderItem={({ item }) => (
+                  <PlayerChip
+                    player={item}
+                    subtitle={`${Math.round(item.abv * 100)}% · ${item.difficulty}`}
+                    onPress={() => openEdit(item.id)}
+                  />
+                )}
               />
-            ) : null}
-            <Button
-              label="End game"
-              variant="destructive"
-              fullWidth
-              onPress={end}
-              style={{ marginTop: spacing.md }}
-            />
+              {players.length < MAX_PLAYERS ? (
+                <Button
+                  label={`+ ${strings.setup.addPlayer}`}
+                  variant="ghost"
+                  fullWidth
+                  onPress={openAdd}
+                />
+              ) : null}
+              <Button
+                label="End game"
+                variant="destructive"
+                fullWidth
+                onPress={end}
+                style={{ marginTop: spacing.md }}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      ) : null}
       <PlayerFormModal
         visible={formOpen}
         mode={formMode}
