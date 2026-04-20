@@ -15,7 +15,7 @@ export type SettingsState = {
   hapticsEnabled: boolean;
 };
 
-export const DEFAULT_UNLOCKS: UnlocksState = { diablo: true };
+export const DEFAULT_UNLOCKS: UnlocksState = { diablo: false };
 export const DEFAULT_SETTINGS: SettingsState = {
   soundEnabled: true,
   hapticsEnabled: true,
@@ -55,7 +55,14 @@ export const settingsStore = {
   write: (state: SettingsState) => writeJson(SETTINGS_KEY, state),
 };
 
+export type AgeGateState = {
+  confirmed: boolean;
+  dobIso?: string;
+};
+
+const AGE_GATE_DEFAULT: AgeGateState = { confirmed: false };
+
 export const ageGateStore = {
-  read: () => readJson<{ confirmed: boolean }>(AGE_GATE_KEY, { confirmed: false }),
-  write: (state: { confirmed: boolean }) => writeJson(AGE_GATE_KEY, state),
+  read: () => readJson<AgeGateState>(AGE_GATE_KEY, AGE_GATE_DEFAULT),
+  write: (state: AgeGateState) => writeJson(AGE_GATE_KEY, state),
 };

@@ -30,12 +30,7 @@ export default function DistributeModal({ amount, drawer, players, onCancel, onC
   }
 
   return (
-    <Modal
-      visible
-      transparent
-      animationType="slide"
-      supportedOrientations={MODAL_ALL_ORIENTATIONS}
-    >
+    <Modal visible transparent animationType="slide" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
       <View style={styles.backdrop}>
         <View style={styles.sheet}>
           <View style={styles.header}>

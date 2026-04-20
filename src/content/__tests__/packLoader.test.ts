@@ -28,7 +28,9 @@ const buildMinimalValidPack = (): Pack => ({
 
 describe('packLoader helpers', () => {
   it('lists both registered packs', () => {
-    const packs = listPacks().map((p) => p.id).sort();
+    const packs = listPacks()
+      .map((p) => p.id)
+      .sort();
     expect(packs).toEqual(['diablo', 'tradicional']);
   });
 
@@ -124,9 +126,7 @@ describe('validatePack', () => {
         : f,
     );
     const errors = validatePack(pack);
-    expect(errors).toContain(
-      'Text on diamonds-8 allows everyone to walk free — violates rule 2',
-    );
+    expect(errors).toContain('Text on diamonds-8 allows everyone to walk free — violates rule 2');
     expect(errors).toContain('Text on diamonds-8 commands a drink — violates rule 6');
   });
 });

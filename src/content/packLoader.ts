@@ -26,7 +26,12 @@ export function findForfeit(pack: Pack, suit: Suit, value: CardValue): ForfeitTe
 }
 
 const FREE_PASS_PATTERNS = [/no one takes/i, /nobody takes/i, /no penalty/i];
-const DRINKING_PATTERNS = [/\btake a drink\b/i, /\btake a sip\b/i, /\btake a shot\b/i, /\bdrink up\b/i];
+const DRINKING_PATTERNS = [
+  /\btake a drink\b/i,
+  /\btake a sip\b/i,
+  /\btake a shot\b/i,
+  /\bdrink up\b/i,
+];
 
 function expectedRankPenalty(value: CardValue): number | 'cardValue' | null {
   if (value === 'A') return null;
@@ -35,7 +40,11 @@ function expectedRankPenalty(value: CardValue): number | 'cardValue' | null {
   return 'cardValue';
 }
 
-function penaltyMatches(actual: unknown, expected: number | 'cardValue', cardValue: CardValue): boolean {
+function penaltyMatches(
+  actual: unknown,
+  expected: number | 'cardValue',
+  cardValue: CardValue,
+): boolean {
   if (expected === 'cardValue') {
     if (actual === 'cardValue') return true;
     if (typeof actual === 'number' && typeof cardValue === 'number') return actual === cardValue;

@@ -19,13 +19,7 @@ export default function DeckHoldOverlay({
   borderRadius = 18,
 }: Props) {
   return (
-    <View
-      pointerEvents="none"
-      style={[
-        styles.clip,
-        { width, height, borderRadius },
-      ]}
-    >
+    <View pointerEvents="none" style={[styles.clip, { width, height, borderRadius }]}>
       <MotiView
         animate={{ height: pressing ? height : 0 }}
         transition={{

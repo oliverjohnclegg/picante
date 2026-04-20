@@ -15,6 +15,7 @@ const FACE_NAMES: Record<string, string> = {
 };
 
 export function cardTitle(card: Card): string {
-  const value = typeof card.value === 'number' ? String(card.value) : FACE_NAMES[card.value] ?? card.value;
+  const value =
+    typeof card.value === 'number' ? String(card.value) : (FACE_NAMES[card.value] ?? card.value);
   return `${value} of ${SUIT_NAMES[card.suit]}`;
 }

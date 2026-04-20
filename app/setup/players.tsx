@@ -69,10 +69,7 @@ export default function PlayersScreen() {
           numColumns={isLandscape ? 4 : 1}
           key={isLandscape ? 'grid' : 'list'}
           columnWrapperStyle={isLandscape ? styles.columnWrapper : undefined}
-          contentContainerStyle={[
-            styles.listContent,
-            isLandscape && styles.listContentLandscape,
-          ]}
+          contentContainerStyle={[styles.listContent, isLandscape && styles.listContentLandscape]}
           renderItem={({ item, index }) => (
             <View style={isLandscape ? styles.cell : undefined}>
               <SetupPlayerRow draft={item} onConfigure={() => openEdit(index)} />

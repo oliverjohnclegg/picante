@@ -12,7 +12,7 @@ export const useUnlocks = create<State>((set) => ({
   hydrated: false,
   hydrate: async () => {
     const stored = await unlocksStore.read();
-    set({ ...stored, diablo: true, hydrated: true });
+    set({ ...stored, hydrated: true });
   },
   setDiablo: async (value) => {
     const next: UnlocksState = { diablo: value };

@@ -1,4 +1,13 @@
-import { colors, elevation, motion, radii, spacing, suitColors, suitDeepColors, typography } from '@ui/theme';
+import {
+  colors,
+  elevation,
+  motion,
+  radii,
+  spacing,
+  suitColors,
+  suitDeepColors,
+  typography,
+} from '@ui/theme';
 
 describe('theme tokens', () => {
   it('defines suit color maps for all suits', () => {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Modal, View, StyleSheet } from 'react-native';
+import { Modal, View, StyleSheet, Pressable } from 'react-native';
 import { create } from 'zustand';
+import { useRouter } from 'expo-router';
 import { colors, radii, spacing } from '@ui/theme';
 import Text from '@ui/components/Text';
 import Button from '@ui/components/Button';
@@ -22,6 +23,7 @@ export function markDrinkResponsiblyPending() {
 }
 
 export default function DrinkResponsiblyModal() {
+  const router = useRouter();
   const acknowledged = useSessionAck((s) => s.acknowledged);
   const acknowledge = useSessionAck((s) => s.acknowledge);
   const [visible, setVisible] = useState(false);
@@ -33,12 +35,7 @@ export default function DrinkResponsiblyModal() {
   if (!visible) return null;
 
   return (
-    <Modal
-      visible
-      transparent
-      animationType="fade"
-      supportedOrientations={MODAL_ALL_ORIENTATIONS}
-    >
+    <Modal visible transparent animationType="fade" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
       <View style={styles.backdrop}>
         <View style={styles.sheet}>
           <Text variant="displayLG" color={colors.orange}>
@@ -56,6 +53,19 @@ export default function DrinkResponsiblyModal() {
               setVisible(false);
             }}
           />
+          <Pressable
+            onPress={() => {
+              acknowledge();
+              setVisible(false);
+              router.push('/tos');
+            }}
+            style={styles.tosLink}
+            accessibilityRole="link"
+          >
+            <Text variant="labelSM" color={colors.textMuted}>
+              {strings.legal.readTos}
+            </Text>
+          </Pressable>
         </View>
       </View>
     </Modal>
@@ -82,5 +92,10 @@ const styles = StyleSheet.create({
   body: {
     marginTop: spacing.md,
     marginBottom: spacing.xl,
+  },
+  tosLink: {
+    marginTop: spacing.md,
+    alignItems: 'center',
+    padding: spacing.sm,
   },
 });

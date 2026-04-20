@@ -16,6 +16,7 @@ module.exports = {
     '^@platform/(.*)$': '<rootDir>/src/platform/$1',
     '^@i18n/(.*)$': '<rootDir>/src/i18n/$1',
     '^@/(.*)$': '<rootDir>/$1',
+    '\\.(m4a|mp3|wav|ogg|png|jpg|jpeg|svg)$': '<rootDir>/src/__mocks__/assetMock.js',
   },
   collectCoverageFrom: [
     'src/game/**/*.ts',

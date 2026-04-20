@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { View, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, useWindowDimensions, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import Screen from '@ui/components/Screen';
 import Text from '@ui/components/Text';
 import Wordmark from '@ui/svg/Wordmark';
@@ -52,6 +53,15 @@ export default function HomeScreen() {
   return (
     <Screen>
       <View style={[styles.root, isLandscape && styles.rootLandscape]}>
+        <Pressable
+          onPress={() => router.push('/settings')}
+          style={styles.settingsGear}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel={strings.settings.title}
+        >
+          <Ionicons name="settings-outline" size={24} color={colors.textMuted} />
+        </Pressable>
         <View style={[styles.hero, isLandscape && styles.heroLandscape]}>
           <Wordmark size={isLandscape ? 56 : 64} align="center" />
           <Text
@@ -109,6 +119,13 @@ const styles = StyleSheet.create({
   rootLandscape: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  settingsGear: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: spacing.sm,
+    zIndex: 10,
   },
   hero: {
     flex: 1,

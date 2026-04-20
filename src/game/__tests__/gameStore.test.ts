@@ -53,7 +53,9 @@ describe('useGameStore', () => {
   });
 
   it('startGame initialises mode, roster, and deck', () => {
-    useGameStore.getState().startGame('diablo', [makeDraft('Ana'), makeDraft('Beto'), makeDraft('Cami')]);
+    useGameStore
+      .getState()
+      .startGame('diablo', [makeDraft('Ana'), makeDraft('Beto'), makeDraft('Cami')]);
     const state = useGameStore.getState();
     expect(state.mode).toBe('diablo');
     expect(state.players).toHaveLength(3);
@@ -63,7 +65,11 @@ describe('useGameStore', () => {
   });
 
   it('drawNextCard returns null when there is no drawer', () => {
-    seedGameState({ players: [], currentPlayerIndex: 0, deck: [makeCard('hearts-2', 'hearts', 2)] });
+    seedGameState({
+      players: [],
+      currentPlayerIndex: 0,
+      deck: [makeCard('hearts-2', 'hearts', 2)],
+    });
     expect(useGameStore.getState().drawNextCard()).toBeNull();
     expect(mockedSessionStore.write).not.toHaveBeenCalled();
   });

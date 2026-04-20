@@ -1,13 +1,13 @@
 # Picante — Product Requirements Document
 
-| Field         | Value                                                                                 |
-| ------------- | ------------------------------------------------------------------------------------- |
-| Version       | 1.0.0-draft                                                                           |
-| Status        | Draft — accepted for implementation                                                   |
-| Last updated  | 2026-04-17                                                                            |
-| Owner         | @oliver                                                                               |
-| Source branch | `feature/picante-prd` → `dev`                                                         |
-| Scope         | v1 launch (MVP) + forward-looking architecture notes for v1.1+                        |
+| Field         | Value                                                          |
+| ------------- | -------------------------------------------------------------- |
+| Version       | 1.0.0-draft                                                    |
+| Status        | Draft — accepted for implementation                            |
+| Last updated  | 2026-04-17                                                     |
+| Owner         | @oliver                                                        |
+| Source branch | `feature/picante-prd` → `dev`                                  |
+| Scope         | v1 launch (MVP) + forward-looking architecture notes for v1.1+ |
 
 > This document is the **canonical** product spec for Picante. Implementation work
 > derives from it. Any mechanical, content, or UX change must be proposed as a PR
@@ -15,9 +15,9 @@
 
 **Change log**
 
-| Version        | Date        | Author   | Notes                                                            |
-| -------------- | ----------- | -------- | ---------------------------------------------------------------- |
-| 1.0.0-draft    | 2026-04-17  | @oliver  | Initial extraction from planning thread; authored on scaffold.   |
+| Version     | Date       | Author  | Notes                                                          |
+| ----------- | ---------- | ------- | -------------------------------------------------------------- |
+| 1.0.0-draft | 2026-04-17 | @oliver | Initial extraction from planning thread; authored on scaffold. |
 
 ---
 
@@ -93,7 +93,7 @@ flowchart LR
 - 52-card deck, one pass, fixed rotation turn order
 - Game ends when deck is empty (no reshuffle in v1)
 - Expected session length: 45–90 min depending on player count
-- **Core rule.** Drinking is *never* a forfeit action. Forfeits deal in penalties
+- **Core rule.** Drinking is _never_ a forfeit action. Forfeits deal in penalties
   only. Shots are the exclusive consequence of `rawPenalties` crossing a player's
   threshold — never something a card can directly command.
 
@@ -126,7 +126,7 @@ if pendingShots > 0:
 
 **Why split from the modulo model.** Resilient to mid-game threshold changes
 (§4.8). `rawPenalties` stays untouched as the lifetime truth,
-`penaltiesSinceLastShot` always reflects *current* progress toward the *current*
+`penaltiesSinceLastShot` always reflects _current_ progress toward the _current_
 threshold, and no retroactive recomputation is needed when `abv` or `difficulty`
 is edited mid-session.
 
@@ -145,10 +145,11 @@ threshold = max(1, round(abvCoefficient(abv, numPlayers) × difficultyMultiplier
 Difficulty multipliers: `Passive = 1.5×`, `Tradicional = 1.0×`, `Muerte = 0.5×`.
 
 ABV buckets (per player count) extend the original spec's `<20 / 20–30 / 30–40 /
->40` table with `<5 / 5–10 / 10–20` granularity for beers, ciders, RTDs. The
-lookup table lives in `src/game/penaltyModel.ts` — calibrated against the
-Fin/Con/Clara/Harley/Clegg reference examples at 5 players and extrapolated to
-4 and 6–16.
+
+> 40`table with`<5 / 5–10 / 10–20`granularity for beers, ciders, RTDs. The
+lookup table lives in`src/game/penaltyModel.ts` — calibrated against the
+> Fin/Con/Clara/Harley/Clegg reference examples at 5 players and extrapolated to
+> 4 and 6–16.
 
 ### 4.3 The four Aces (rubber-band / punishment cards)
 
@@ -172,23 +173,23 @@ Suit-bound mapping:
 **Standardised card values** (penalty units at stake) — applied universally across
 all four suits:
 
-| Card      | Penalty          |
-| --------- | ---------------- |
-| 2–10      | card face value  |
-| J         | 10               |
-| Q         | 10               |
-| K         | 15               |
-| A         | effect-defined (§4.3) |
+| Card | Penalty               |
+| ---- | --------------------- |
+| 2–10 | card face value       |
+| J    | 10                    |
+| Q    | 10                    |
+| K    | 15                    |
+| A    | effect-defined (§4.3) |
 
-The table below defines the *forfeit type* per suit × card — the penalty *amount*
+The table below defines the _forfeit type_ per suit × card — the penalty _amount_
 is always the value above, never re-specified per card.
 
-| Suit       | Spanish   | Theme           | Numbered (2–10)                                                                                                                       | J                                                                                                                    | Q                                                                                                                                                           | K                                                                                                      |
-| ---------- | --------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| ♥ Hearts   | Secretos  | Truths (self)   | A random other player *(bias-weighted, any)* asks you a truth (not yes/no). Answer → they take penalty. Cop-out → you take it.       | True/false statement about yourself; distribute penalty among wrong-guessers (take it if *everyone* was correct).    | Reveal a spicy secret about yourself; if news to everyone, distribute the penalty; if not, you take it.                                                     | A random other player *(bias-weighted, any)* asks a darker / more intimate truth. Same resolution as numbered. |
-| ♦ Diamonds | Riesgos   | Dares           | A random other player *(bias-weighted, any)* dares you. Do it → they take penalty. Cop-out → you take it.                            | Dare a random other player *(§4.6.a bias-weighted)*. Do it → they take penalty. Cop-out → you take it.               | Send a risqué message to a random other player *(bias-weighted, `physical`)*. Send → they take penalty. Cop-out → you take it.                              | A random other player *(bias-weighted, any)* gives a significantly harder dare. Same resolution, higher stakes. |
-| ♠ Spades   | Sorbo     | Shared pain     | "Who is the most X?" group vote. **Split the penalty**: drawer auto-takes `ceil(N/2)`, chosen most-voted player takes `floor(N/2)`. | Pick a random other player *(bias-weighted, any)*. You both take the penalty.                                         | A random other player *(bias-weighted, `physical`)* is invited to a kiss with the drawer. Both kiss → distribute penalty among the rest. Both decline → each takes half (rounded up). One declines → they take all. | Pick a random other player *(bias-weighted, any)*. You both take the penalty.                           |
-| ♣ Clubs    | Locura    | Mini-games      | Each of 2–10 is a canned mini-game (§4.4.a). Loser takes the penalty.                                                                | **Drawer's Challenge** — drawer invents a short physical / trivia / dexterity challenge and picks any player to attempt it. Complete → drawer takes penalty. Fail → they take penalty. | **1v1 Rock-Paper-Scissors** — drawer picks any player. One round RPS. Loser takes the penalty.                                                              | **Picante Roulette** — on "3", every player (including drawer) simultaneously points at one other. Most-pointed-at takes penalty; ties broken by drawer. |
+| Suit       | Spanish  | Theme         | Numbered (2–10)                                                                                                                     | J                                                                                                                                                                                      | Q                                                                                                                                                                                                                   | K                                                                                                                                                        |
+| ---------- | -------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ♥ Hearts   | Secretos | Truths (self) | A random other player _(bias-weighted, any)_ asks you a truth (not yes/no). Answer → they take penalty. Cop-out → you take it.      | True/false statement about yourself; distribute penalty among wrong-guessers (take it if _everyone_ was correct).                                                                      | Reveal a spicy secret about yourself; if news to everyone, distribute the penalty; if not, you take it.                                                                                                             | A random other player _(bias-weighted, any)_ asks a darker / more intimate truth. Same resolution as numbered.                                           |
+| ♦ Diamonds | Riesgos  | Dares         | A random other player _(bias-weighted, any)_ dares you. Do it → they take penalty. Cop-out → you take it.                           | Dare a random other player _(§4.6.a bias-weighted)_. Do it → they take penalty. Cop-out → you take it.                                                                                 | Send a risqué message to a random other player _(bias-weighted, `physical`)_. Send → they take penalty. Cop-out → you take it.                                                                                      | A random other player _(bias-weighted, any)_ gives a significantly harder dare. Same resolution, higher stakes.                                          |
+| ♠ Spades   | Sorbo    | Shared pain   | "Who is the most X?" group vote. **Split the penalty**: drawer auto-takes `ceil(N/2)`, chosen most-voted player takes `floor(N/2)`. | Pick a random other player _(bias-weighted, any)_. You both take the penalty.                                                                                                          | A random other player _(bias-weighted, `physical`)_ is invited to a kiss with the drawer. Both kiss → distribute penalty among the rest. Both decline → each takes half (rounded up). One declines → they take all. | Pick a random other player _(bias-weighted, any)_. You both take the penalty.                                                                            |
+| ♣ Clubs    | Locura   | Mini-games    | Each of 2–10 is a canned mini-game (§4.4.a). Loser takes the penalty.                                                               | **Drawer's Challenge** — drawer invents a short physical / trivia / dexterity challenge and picks any player to attempt it. Complete → drawer takes penalty. Fail → they take penalty. | **1v1 Rock-Paper-Scissors** — drawer picks any player. One round RPS. Loser takes the penalty.                                                                                                                      | **Picante Roulette** — on "3", every player (including drawer) simultaneously points at one other. Most-pointed-at takes penalty; ties broken by drawer. |
 
 Notes on the rewrites:
 
@@ -205,7 +206,7 @@ Notes on the rewrites:
 
 ### 4.4.a Numbered Clubs mini-games (one per card value, canned)
 
-- **2 — Index:** first to *not* touch their index finger to their nose loses.
+- **2 — Index:** first to _not_ touch their index finger to their nose loses.
 - **3 — Three-word:** build a sentence one word at a time around the table; break = lose.
 - **4 — Categories:** pick a category, go round naming items, repeat/blank = lose.
 - **5 — Thumb war:** drawer picks a challenger; loser takes pen.
@@ -318,8 +319,8 @@ a roster-editor overlay. From here the host can:
   end-game leaderboard completeness (marked "left").
 - Pending-but-unconsumed shots are simply lost.
 - `numPlayers` decrements. Every remaining player's threshold is recalculated
-  (generally raising thresholds). Back-owed-shot logic does *not* trigger on
-  threshold *increase*.
+  (generally raising thresholds). Back-owed-shot logic does _not_ trigger on
+  threshold _increase_.
 
 **Deck behaviour.** Untouched by roster changes. Already-drawn cards stay drawn;
 remaining cards continue in their existing order. More players → shorter overall
@@ -338,17 +339,17 @@ These are **hard invariants** every forfeit in every pack must satisfy. They're
 enforceable in `packLoader.ts` validation where mechanical, and enforced by
 content review where subjective.
 
-1. **Forfeits are guidelines, not scripts.** Text provides the *floor* — a
+1. **Forfeits are guidelines, not scripts.** Text provides the _floor_ — a
    direction and (for higher-value cards) a difficulty assertion — but never
    dictates an exact action. The group decides the specifics. Spicier modes
    (Diablo+) may raise the floor's intensity, but must still delegate the
    concrete action to the group. Mini-games (Clubs 2–Q) are an explicit
-   exception: the mini-game *is* the forfeit, so its structure is fixed.
+   exception: the mini-game _is_ the forfeit, so its structure is fixed.
 2. **Every card allocates at least one penalty.** No card may resolve with
    zero penalties applied. "Everyone off free" is not a legal branch. Design
    a forfeit so at least one named path always ends in penalty allocation.
 3. **No multi-turn forfeits.** A card's effect must resolve entirely within
-   its own turn. The *only* exception is strictly passive states that require
+   its own turn. The _only_ exception is strictly passive states that require
    zero ongoing thought from the player (e.g., "lose a layer of clothes until
    end of game"). Active obligations that span turns (thumb-master, rule-master,
    sentries) are forbidden.
@@ -401,12 +402,12 @@ Each forfeit entry:
 
 ```ts
 type ForfeitTemplate = {
-    suit: 'hearts' | 'diamonds' | 'spades' | 'clubs';
-    value: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 'J' | 'Q' | 'K' | 'A';
-    text: string;              // supports {{drawer}}, {{biasedRandom}} tokens
-    penalty: 'cardValue' | 'cardValueHalf' | number;  // usually derived from value per §4.4
-    targetingMode: 'any' | 'physical';   // drives §4.6.a attractionWeight; defaults to 'any'
-    miniGame?: MiniGameId;     // clubs numbered only
+  suit: 'hearts' | 'diamonds' | 'spades' | 'clubs';
+  value: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 'J' | 'Q' | 'K' | 'A';
+  text: string; // supports {{drawer}}, {{biasedRandom}} tokens
+  penalty: 'cardValue' | 'cardValueHalf' | number; // usually derived from value per §4.4
+  targetingMode: 'any' | 'physical'; // drives §4.6.a attractionWeight; defaults to 'any'
+  miniGame?: MiniGameId; // clubs numbered only
 };
 ```
 
@@ -430,14 +431,14 @@ mobile) and 16:9 (landscape / TV-streamed).
 
 - **Home** — big `START GAME` CTA, `How to Play`, settings gear. That's it.
 - **Setup (3 steps, paginated)**
-    1. Mode select: Tradicional / Diablo (locked if not purchased).
-    2. Player roster: 4–16 players. Per player: `name`, `abv%` (numeric input
-       with common presets — beer 5%, wine 12%, spirits 40%), `difficulty`
-       (Passive / Tradicional / Muerte), `gender` (Man / Woman / Non-binary),
-       `attractedTo` (multiselect; empty = asexual / opt-out of physical
-       targeting). The attraction fields only influence the `physical` targeting
-       mode (§4.6.a); they do not gate any forfeit.
-    3. Review & begin: shows each player's computed threshold so hosts can sanity-check.
+  1. Mode select: Tradicional / Diablo (locked if not purchased).
+  2. Player roster: 4–16 players. Per player: `name`, `abv%` (numeric input
+     with common presets — beer 5%, wine 12%, spirits 40%), `difficulty`
+     (Passive / Tradicional / Muerte), `gender` (Man / Woman / Non-binary),
+     `attractedTo` (multiselect; empty = asexual / opt-out of physical
+     targeting). The attraction fields only influence the `physical` targeting
+     mode (§4.6.a); they do not gate any forfeit.
+  3. Review & begin: shows each player's computed threshold so hosts can sanity-check.
 - **Game** — primary gameplay screen (layout in §6.2).
 - **Shot Takeover** — overlay modal.
 - **Penalty Distribution** — overlay modal.
@@ -454,9 +455,9 @@ mobile) and 16:9 (landscape / TV-streamed).
   and suit dictate content. Below the text, contextual actions
   (`Distribute Penalties`, `Next Turn`, etc.).
 - **Footer (two elements).**
-    - Left: cards-remaining-in-deck counter (progress bar).
-    - Right: top-3 players closest to next shot (ranked by
-      `penaltiesSinceLastShot / threshold`) with small threshold rings.
+  - Left: cards-remaining-in-deck counter (progress bar).
+  - Right: top-3 players closest to next shot (ranked by
+    `penaltiesSinceLastShot / threshold`) with small threshold rings.
 - Full roster (up to 16 players) is not in the footer — accessed via the
   top-right gear menu. Top-3 ticker remains the at-a-glance tension indicator
   regardless of group size.
@@ -513,10 +514,10 @@ Dark-first, single theme (dark mode only in v1).
 - **Base / background.** Near-black `#0A0A0A`, off-black panels `#141414`,
   subtle borders `#262626`.
 - **Brand accents.**
-    - `picante-orange` `#FF6B35` — primary CTA, Tradicional suit accents, Diamonds
-    - `picante-yellow` `#F5C518` — highlights, shot-takeover, Clubs
-    - `picante-purple` `#8B3FBF` — Diablo mode, Spades
-    - `picante-green`  `#3FAE6A` — success states, confirmations, Hearts
+  - `picante-orange` `#FF6B35` — primary CTA, Tradicional suit accents, Diamonds
+  - `picante-yellow` `#F5C518` — highlights, shot-takeover, Clubs
+  - `picante-purple` `#8B3FBF` — Diablo mode, Spades
+  - `picante-green` `#3FAE6A` — success states, confirmations, Hearts
 - **Text.** `#F5F5F5` primary, `#A3A3A3` secondary, `#525252` tertiary.
 - **Usage principle.** Single-accent-per-context — suit accents during their card,
   neutral elsewhere. Gradients reserved for shot takeovers and mode-select hero
@@ -583,7 +584,7 @@ icon export which is rendered from an SVG source at build time).
 - **SVG.** `react-native-svg`.
 - **Audio.** `expo-av` for the 4 SFX samples (§7.5).
 - **Persistence.** `@react-native-async-storage/async-storage` (session snapshot
-  + purchased packs).
+  - purchased packs).
 - **Payments.** `react-native-iap` (iOS StoreKit, Android Billing), stub on web.
 - **Fonts.** `expo-font` loading Fraunces + Inter.
 - **i18n.** All user-facing strings routed through a lightweight `src/i18n/en.ts`
@@ -636,29 +637,29 @@ Max ~100 lines per file — components split aggressively. Pure game logic
 
 ```ts
 type GameState = {
-    mode: 'tradicional' | 'diablo';
-    players: Player[];                 // turn order (index-based rotation)
-    currentPlayerIndex: number;
-    deck: Card[];                      // remaining, in draw order
-    drawnCard: Card | null;
-    history: TurnRecord[];             // end-game leaderboard + debugging
-    pendingModal: ModalRequest | null; // distribute / shot-takeover / etc
+  mode: 'tradicional' | 'diablo';
+  players: Player[]; // turn order (index-based rotation)
+  currentPlayerIndex: number;
+  deck: Card[]; // remaining, in draw order
+  drawnCard: Card | null;
+  history: TurnRecord[]; // end-game leaderboard + debugging
+  pendingModal: ModalRequest | null; // distribute / shot-takeover / etc
 };
 
 type Gender = 'man' | 'woman' | 'nonbinary';
 
 type Player = {
-    id: string;
-    name: string;
-    abv: number;                       // 0..1 (e.g. 0.4 = 40% ABV)
-    difficulty: 'passive' | 'tradicional' | 'muerte';
-    gender: Gender;                    // drives physical-forfeit attraction weighting (§4.6.a)
-    attractedTo: Gender[];             // multiselect; empty = opt-out of physical targeting
-    rawPenalties: number;              // lifetime, leaderboard, Ace ranking
-    penaltiesSinceLastShot: number;    // displayed as X/threshold; resets to overflow on shot
-    shotsTaken: number;
-    threshold: number;                 // recomputed on any mid-game roster change (§4.8)
-    status: 'active' | 'removed';      // removed players stay in history for leaderboard
+  id: string;
+  name: string;
+  abv: number; // 0..1 (e.g. 0.4 = 40% ABV)
+  difficulty: 'passive' | 'tradicional' | 'muerte';
+  gender: Gender; // drives physical-forfeit attraction weighting (§4.6.a)
+  attractedTo: Gender[]; // multiselect; empty = opt-out of physical targeting
+  rawPenalties: number; // lifetime, leaderboard, Ace ranking
+  penaltiesSinceLastShot: number; // displayed as X/threshold; resets to overflow on shot
+  shotsTaken: number;
+  threshold: number; // recomputed on any mid-game roster change (§4.8)
+  status: 'active' | 'removed'; // removed players stay in history for leaderboard
 };
 ```
 
@@ -818,5 +819,5 @@ strictly around funnel + crash, no content logging.
 8. **Risqué forfeit wording** — needs careful framing (invitation + explicit
    cop-out, never mandate) for App Store review. Draft, review, iterate.
 9. **Diablo mode delta magnitude** — confirm whether Diablo diverges only in
-   *content wording* (current plan) or additionally in *intensity of consequences*.
+   _content wording_ (current plan) or additionally in _intensity of consequences_.
    Round 2 decision: content-only — revisit once drafts exist.
