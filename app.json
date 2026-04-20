@@ -8,12 +8,22 @@
     "scheme": "picante",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "assetBundlePatterns": ["assets/**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.picante.placeholder"
+      "bundleIdentifier": "com.picante.app",
+      "buildNumber": "1",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
-      "package": "com.picante.placeholder",
+      "package": "com.picante.app",
+      "versionCode": 1,
+      "permissions": [],
       "adaptiveIcon": {
         "backgroundColor": "#0A0A0A",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
