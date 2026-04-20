@@ -9,7 +9,6 @@ module.exports = defineConfig([
   {
     plugins: { prettier: prettierPlugin },
     rules: {
-      'import/no-unresolved': ['error', { ignore: ['react-native-iap'] }],
       'prettier/prettier': 'warn',
     },
   },

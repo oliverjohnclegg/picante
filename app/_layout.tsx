@@ -8,6 +8,7 @@ import AgeGate from '@ui/components/AgeGate';
 import { colors } from '@ui/theme';
 import { useSettings } from '@platform/settingsStore';
 import { useUnlocks } from '@platform/unlocksStore';
+import { iap } from '@platform/iap';
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -19,6 +20,10 @@ export default function RootLayout() {
   useEffect(() => {
     hydrateSettings();
     hydrateUnlocks();
+    iap.init().catch(() => undefined);
+    return () => {
+      iap.teardown().catch(() => undefined);
+    };
   }, [hydrateSettings, hydrateUnlocks]);
 
   useEffect(() => {
