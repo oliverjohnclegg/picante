@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Modal, View, StyleSheet } from 'react-native';
 import type { Player } from '@game/types';
 import { colors, spacing } from '@ui/theme';
@@ -5,6 +6,7 @@ import Text from '@ui/components/Text';
 import Button from '@ui/components/Button';
 import { strings } from '@i18n/en';
 import { MODAL_ALL_ORIENTATIONS } from '@ui/components/modalDefaults';
+import { sfx } from '@platform/sfx';
 
 type Props = {
   player: Player;
@@ -13,6 +15,10 @@ type Props = {
 };
 
 export default function ShotTakeoverModal({ player, shots, onDismiss }: Props) {
+  useEffect(() => {
+    sfx.play('salud_chime').catch(() => undefined);
+  }, []);
+
   return (
     <Modal
       visible

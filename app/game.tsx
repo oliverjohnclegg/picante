@@ -27,6 +27,7 @@ import { useGameStore, type ResolvedForfeit } from '@game/gameStore';
 import { colors, spacing, suitColors } from '@ui/theme';
 import { strings } from '@i18n/en';
 import { lightTap, mediumTap } from '@platform/haptics';
+import { sfx } from '@platform/sfx';
 import { shotProgressRatio } from '@game/penaltyModel';
 import { cardTitle } from '@game/cardTitle';
 import { computeDrawerSplit } from '@game/splitShares';
@@ -134,12 +135,14 @@ export default function GameScreen() {
 
   function handleDraw() {
     mediumTap();
+    sfx.play('card_flip').catch(() => undefined);
     const r = drawNextCard();
     if (!r) return;
     if (!isLandscape) LayoutAnimation.configureNext(LAYOUT_TRANSITION);
     setResolved(r);
     setPenaltiesApplied(false);
     if (r.template.value === 'A') {
+      sfx.play('ace_sting').catch(() => undefined);
       resolveCurrentAce();
       setPenaltiesApplied(true);
     } else if (r.template.resolution === 'auto' && r.biasedRandomPlayer) {
