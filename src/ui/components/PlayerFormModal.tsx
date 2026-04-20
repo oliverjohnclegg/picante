@@ -42,7 +42,10 @@ export default function PlayerFormModal({
 }: Props) {
   const { width: winW, height: winH } = useWindowDimensions();
   const viewportIsLandscape = winW > winH;
-  const isLandscape = parentIsLandscape ?? viewportIsLandscape;
+  const responsiveIsLandscape = parentIsLandscape ?? viewportIsLandscape;
+  const [openIsLandscape, setOpenIsLandscape] = useState(responsiveIsLandscape);
+  const wasVisibleRef = useRef(false);
+  const isLandscape = visible ? openIsLandscape : responsiveIsLandscape;
   const sheetMaxH = Math.min(winH * (isLandscape ? 0.9 : 0.92), isLandscape ? 540 : 720);
   const sheetW = isLandscape ? Math.min(520, Math.max(280, winW - spacing.xl * 2)) : undefined;
   const scrollPortraitMax = Math.max(200, sheetMaxH - 180);
@@ -53,6 +56,15 @@ export default function PlayerFormModal({
   const [difficulty, setDifficulty] = useState<Difficulty>('tradicional');
   const [gender, setGender] = useState<Gender>('man');
   const [attractedTo, setAttractedTo] = useState<Gender[]>([]);
+
+  useEffect(() => {
+    if (visible && !wasVisibleRef.current) {
+      setOpenIsLandscape(responsiveIsLandscape);
+    } else if (!visible) {
+      setOpenIsLandscape(responsiveIsLandscape);
+    }
+    wasVisibleRef.current = visible;
+  }, [visible, responsiveIsLandscape]);
 
   useEffect(() => {
     if (!visible) return;
