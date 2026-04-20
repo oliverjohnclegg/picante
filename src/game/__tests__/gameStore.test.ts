@@ -7,7 +7,7 @@ jest.mock('@game/persistence', () => ({
 }));
 
 jest.mock('@game/targeting', () => {
-  const actual = jest.requireActual('/workspace/src/game/targeting.ts');
+  const actual = jest.requireActual('@game/targeting');
   return {
     ...actual,
     pickBiasedRandom: jest.fn(),
@@ -15,7 +15,7 @@ jest.mock('@game/targeting', () => {
 });
 
 jest.mock('@game/aces', () => {
-  const actual = jest.requireActual('/workspace/src/game/aces.ts');
+  const actual = jest.requireActual('@game/aces');
   return {
     ...actual,
     resolveAce: jest.fn(),
@@ -23,7 +23,7 @@ jest.mock('@game/aces', () => {
 });
 
 jest.mock('@content/packLoader', () => {
-  const actual = jest.requireActual('/workspace/src/content/packLoader.ts');
+  const actual = jest.requireActual('@content/packLoader');
   return {
     ...actual,
     findForfeit: jest.fn(actual.findForfeit),
@@ -48,7 +48,7 @@ describe('useGameStore', () => {
     jest.clearAllMocks();
     mockedSessionStore.write.mockResolvedValue(undefined);
     mockedSessionStore.clear.mockResolvedValue(undefined);
-    mockedFindForfeit.mockImplementation(jest.requireActual('/workspace/src/content/packLoader.ts').findForfeit);
+    mockedFindForfeit.mockImplementation(jest.requireActual('@content/packLoader').findForfeit);
     seedGameState({});
   });
 
