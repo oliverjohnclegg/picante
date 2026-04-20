@@ -196,9 +196,7 @@ describe('iap facade', () => {
     const { iap, unlocksStore } = await loadIapModule({
       os: 'ios',
       mockOverrides: {
-        getAvailablePurchases: jest
-          .fn()
-          .mockResolvedValue([{ productId: 'com.picante.diablo' }]),
+        getAvailablePurchases: jest.fn().mockResolvedValue([{ productId: 'com.picante.diablo' }]),
       },
     });
     await expect(iap.restorePurchases()).resolves.toEqual({ diablo: true });

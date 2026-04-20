@@ -85,12 +85,7 @@ export default function AgeGate() {
   if (stage === 'loading' || stage === 'cleared') return null;
 
   return (
-    <Modal
-      visible
-      animationType="fade"
-      transparent
-      supportedOrientations={MODAL_ALL_ORIENTATIONS}
-    >
+    <Modal visible animationType="fade" transparent supportedOrientations={MODAL_ALL_ORIENTATIONS}>
       <View style={styles.backdrop}>
         <View style={styles.sheet}>
           {stage === 'entry' ? (

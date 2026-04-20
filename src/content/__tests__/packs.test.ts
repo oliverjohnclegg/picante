@@ -77,18 +77,15 @@ describe('content packs', () => {
     },
   );
 
-  it.each(['tradicional', 'diablo'] as const)(
-    'pack %s never commands drinking (rule 6)',
-    (id) => {
-      const pack = getPack(id);
-      for (const f of pack.forfeits) {
-        expect(f.text).not.toMatch(/\btake a drink\b/i);
-        expect(f.text).not.toMatch(/\btake a sip\b/i);
-        expect(f.text).not.toMatch(/\btake a shot\b/i);
-        expect(f.text).not.toMatch(/\bdrink up\b/i);
-      }
-    },
-  );
+  it.each(['tradicional', 'diablo'] as const)('pack %s never commands drinking (rule 6)', (id) => {
+    const pack = getPack(id);
+    for (const f of pack.forfeits) {
+      expect(f.text).not.toMatch(/\btake a drink\b/i);
+      expect(f.text).not.toMatch(/\btake a sip\b/i);
+      expect(f.text).not.toMatch(/\btake a shot\b/i);
+      expect(f.text).not.toMatch(/\bdrink up\b/i);
+    }
+  });
 
   it.each(['tradicional', 'diablo'] as const)(
     'pack %s has explicit cop-out language on every non-auto card',

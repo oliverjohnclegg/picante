@@ -3,5 +3,7 @@ node_modules
 dist
 android
 ios
+coverage
 *.lock
 package-lock.json
+src/content/packs/*.json

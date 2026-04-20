@@ -97,10 +97,7 @@ function ModeCard({
   lockedLabel,
 }: CardProps) {
   return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.cardWrap, isLandscape && styles.cardWrapLandscape]}
-    >
+    <Pressable onPress={onPress} style={[styles.cardWrap, isLandscape && styles.cardWrapLandscape]}>
       <LinearGradient
         colors={[accent, colors.surface]}
         start={{ x: 0, y: 0 }}

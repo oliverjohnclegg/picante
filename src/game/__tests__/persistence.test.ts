@@ -61,7 +61,10 @@ describe('persistence stores', () => {
   it('writes session snapshot JSON', async () => {
     storage.setItem.mockResolvedValueOnce(undefined);
     await sessionStore.write(sessionState);
-    expect(storage.setItem).toHaveBeenCalledWith('@picante/session/v1', JSON.stringify(sessionState));
+    expect(storage.setItem).toHaveBeenCalledWith(
+      '@picante/session/v1',
+      JSON.stringify(sessionState),
+    );
   });
 
   it('swallows write errors and never throws', async () => {

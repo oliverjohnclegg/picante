@@ -35,12 +35,7 @@ export default function DrinkResponsiblyModal() {
   if (!visible) return null;
 
   return (
-    <Modal
-      visible
-      transparent
-      animationType="fade"
-      supportedOrientations={MODAL_ALL_ORIENTATIONS}
-    >
+    <Modal visible transparent animationType="fade" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
       <View style={styles.backdrop}>
         <View style={styles.sheet}>
           <Text variant="displayLG" color={colors.orange}>

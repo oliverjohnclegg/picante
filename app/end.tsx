@@ -65,17 +65,9 @@ export default function EndScreen() {
         {awards.length > 0 ? (
           <View style={styles.awardsGrid}>
             {awards.map((award) => (
-              <SectionCard
-                key={award.id}
-                accent={AWARD_ACCENT[award.id]}
-                style={styles.awardCard}
-              >
+              <SectionCard key={award.id} accent={AWARD_ACCENT[award.id]} style={styles.awardCard}>
                 <View style={styles.awardHeader}>
-                  <Ionicons
-                    name={AWARD_ICON[award.id]}
-                    size={18}
-                    color={AWARD_ACCENT[award.id]}
-                  />
+                  <Ionicons name={AWARD_ICON[award.id]} size={18} color={AWARD_ACCENT[award.id]} />
                   <Text variant="labelSM" color={AWARD_ACCENT[award.id]}>
                     {award.title}
                   </Text>

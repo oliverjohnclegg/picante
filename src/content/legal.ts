@@ -10,7 +10,7 @@ export const TOS_SECTIONS: LegalSection[] = [
   },
   {
     heading: 'What Picante is',
-    body: 'Picante is a social party game for adults. It does not dispense alcohol and does not instruct anyone to drink. Shots only occur when a player\'s own penalty counter crosses a threshold derived from information they themselves entered. The cop-out option on every forfeit is a hard right, not a suggestion.',
+    body: "Picante is a social party game for adults. It does not dispense alcohol and does not instruct anyone to drink. Shots only occur when a player's own penalty counter crosses a threshold derived from information they themselves entered. The cop-out option on every forfeit is a hard right, not a suggestion.",
   },
   {
     heading: 'Responsibility',
@@ -45,7 +45,7 @@ export const PRIVACY_SECTIONS: LegalSection[] = [
   },
   {
     heading: 'What stays on your device',
-    body: 'Your active session, unlocked packs, audio/haptics settings, and the date of birth you entered at first launch are stored locally using the operating system\'s standard secure storage. They never leave the device.',
+    body: "Your active session, unlocked packs, audio/haptics settings, and the date of birth you entered at first launch are stored locally using the operating system's standard secure storage. They never leave the device.",
   },
   {
     heading: 'What we never collect',

@@ -20,12 +20,7 @@ export default function ShotTakeoverModal({ player, shots, onDismiss }: Props) {
   }, []);
 
   return (
-    <Modal
-      visible
-      transparent
-      animationType="fade"
-      supportedOrientations={MODAL_ALL_ORIENTATIONS}
-    >
+    <Modal visible transparent animationType="fade" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
       <View style={styles.backdrop}>
         <View style={styles.content}>
           <Text variant="labelSM" color={colors.yellow}>

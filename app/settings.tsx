@@ -1,12 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Switch,
-  View,
-  Pressable,
-  ActivityIndicator,
-} from 'react-native';
+import { ScrollView, StyleSheet, Switch, View, Pressable, ActivityIndicator } from 'react-native';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -95,10 +88,7 @@ export default function SettingsScreen() {
         <Text variant="displayLG">{strings.settings.title}</Text>
         <View style={{ width: 28 }} />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.body}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         <SectionLabel text={strings.settings.audioSection} />
         <SectionCard style={styles.section}>
           <ToggleRow
@@ -135,7 +125,9 @@ export default function SettingsScreen() {
               <Ionicons name="checkmark-circle" size={24} color={colors.green} />
             ) : (
               <Button
-                label={purchasing ? strings.settings.purchaseInFlight : strings.settings.purchaseDiablo}
+                label={
+                  purchasing ? strings.settings.purchaseInFlight : strings.settings.purchaseDiablo
+                }
                 variant="purple"
                 size="sm"
                 disabled={purchasing}

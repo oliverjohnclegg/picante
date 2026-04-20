@@ -98,8 +98,7 @@ export const en = {
   },
   legal: {
     ageGateTitle: 'Are you 18 or older?',
-    ageGateBody:
-      'Picante is an 18+ adult drinking game. Enter your date of birth to continue.',
+    ageGateBody: 'Picante is an 18+ adult drinking game. Enter your date of birth to continue.',
     ageGateDobLabel: 'Date of birth',
     ageGateDay: 'DD',
     ageGateMonth: 'MM',
@@ -144,7 +143,8 @@ export const en = {
   purchase: {
     title: 'Unlock Diablo',
     subtitle: 'Spicier. Sharper. 18+.',
-    bulletContent: 'A full 52-card content swap with sharper, more sexual, more confrontational forfeits.',
+    bulletContent:
+      'A full 52-card content swap with sharper, more sexual, more confrontational forfeits.',
     bulletMechanics: 'Same mechanics, same economy — just with the gloves off.',
     bulletOneTime: 'One-time purchase. No ads. No subscription.',
     buy: 'Buy for {price}',

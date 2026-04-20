@@ -28,19 +28,19 @@ Then press `i` (iOS sim), `a` (Android emulator), or `w` (web).
 
 ## Scripts
 
-| Script                   | Purpose                              |
-| ------------------------ | ------------------------------------ |
-| `npm start`              | Expo dev server                      |
-| `npm run ios`            | Dev server + iOS simulator           |
-| `npm run android`        | Dev server + Android emulator        |
-| `npm run web`            | Dev server + web                     |
-| `npm run lint`           | ESLint (expo config)                 |
-| `npm run format`         | Prettier write                       |
-| `npm run format:check`   | Prettier check (used in CI)          |
-| `npm run typecheck`      | `tsc --noEmit`                       |
-| `npm test`               | Jest (unit tests only, no RN render) |
-| `npm run test:watch`     | Jest watch mode                      |
-| `npm run test:coverage`  | Jest with coverage                   |
+| Script                  | Purpose                              |
+| ----------------------- | ------------------------------------ |
+| `npm start`             | Expo dev server                      |
+| `npm run ios`           | Dev server + iOS simulator           |
+| `npm run android`       | Dev server + Android emulator        |
+| `npm run web`           | Dev server + web                     |
+| `npm run lint`          | ESLint (expo config)                 |
+| `npm run format`        | Prettier write                       |
+| `npm run format:check`  | Prettier check (used in CI)          |
+| `npm run typecheck`     | `tsc --noEmit`                       |
+| `npm test`              | Jest (unit tests only, no RN render) |
+| `npm run test:watch`    | Jest watch mode                      |
+| `npm run test:coverage` | Jest with coverage                   |
 
 ## Repository layout
 

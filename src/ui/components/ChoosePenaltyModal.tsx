@@ -46,12 +46,7 @@ export default function ChoosePenaltyModal({
     : strings.choose.hint;
 
   return (
-    <Modal
-      visible
-      transparent
-      animationType="slide"
-      supportedOrientations={MODAL_ALL_ORIENTATIONS}
-    >
+    <Modal visible transparent animationType="slide" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
       <View style={styles.backdrop}>
         <View style={styles.sheet}>
           <View style={styles.header}>
@@ -73,10 +68,7 @@ export default function ChoosePenaltyModal({
               return (
                 <Pressable
                   onPress={() => setSelectedId(item.id)}
-                  style={[
-                    styles.row,
-                    selected && styles.rowSelected,
-                  ]}
+                  style={[styles.row, selected && styles.rowSelected]}
                 >
                   <View style={{ flex: 1 }}>
                     <Text variant="displaySM">{item.name}</Text>

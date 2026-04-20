@@ -116,9 +116,7 @@ export default function PlayerFormModal({
     >
       <View style={styles.sheetHeader}>
         <Text variant="displayMD">
-          {mode === 'add'
-            ? strings.setup.addPlayerModalTitle
-            : strings.setup.editPlayerModalTitle}
+          {mode === 'add' ? strings.setup.addPlayerModalTitle : strings.setup.editPlayerModalTitle}
         </Text>
         <Pressable onPress={onClose} hitSlop={12}>
           <Text variant="displaySM" color={colors.textMuted}>
