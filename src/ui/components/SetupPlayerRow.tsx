@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { PlayerDraft } from '@game/playerFactory';
-import { colors, radii, spacing } from '@ui/theme';
 import Text from '@ui/components/Text';
+import { colors, layout, radii, spacing } from '@ui/theme';
 import { strings } from '@i18n/en';
 
 type Props = {
@@ -12,25 +12,27 @@ type Props = {
 
 export default function SetupPlayerRow({ draft, onConfigure }: Props) {
   const abvPct = Math.round(draft.abv * 100);
+  const subtitle = `${abvPct}% · ${draft.difficulty} · ${draft.gender}`;
   return (
-    <View style={styles.root}>
+    <Pressable
+      onPress={onConfigure}
+      accessibilityRole="button"
+      accessibilityLabel={`${draft.name} · ${subtitle}`}
+      accessibilityHint={strings.game.settings}
+      style={({ pressed }) => [styles.root, pressed && styles.rootPressed]}
+    >
       <View style={styles.meta}>
         <Text variant="displaySM" numberOfLines={1}>
           {draft.name}
         </Text>
         <Text variant="labelSM" color={colors.textMuted} numberOfLines={1}>
-          {abvPct}% · {draft.difficulty} · {draft.gender}
+          {subtitle}
         </Text>
       </View>
-      <Pressable
-        onPress={onConfigure}
-        style={({ pressed }) => [styles.gear, { opacity: pressed ? 0.65 : 1 }]}
-        accessibilityRole="button"
-        accessibilityLabel={strings.game.settings}
-      >
+      <View style={styles.gear} pointerEvents="none">
         <Ionicons name="settings-sharp" size={22} color={colors.yellow} />
-      </Pressable>
-    </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -45,11 +47,19 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
     gap: spacing.md,
+    minHeight: layout.minTapTarget + spacing.md,
   },
-  meta: { flex: 1, minWidth: 0 },
+  rootPressed: {
+    opacity: 0.85,
+    borderColor: colors.borderStrong,
+  },
+  meta: {
+    flex: 1,
+    minWidth: 0,
+  },
   gear: {
-    width: 44,
-    height: 44,
+    width: layout.minTapTarget,
+    height: layout.minTapTarget,
     borderRadius: radii.md,
     alignItems: 'center',
     justifyContent: 'center',

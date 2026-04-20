@@ -125,8 +125,9 @@ export const iap: IapFacade = {
       const timeout = setTimeout(() => {
         resolvePending({ success: false, error: 'Purchase timed out.' });
       }, PURCHASE_TIMEOUT_MS);
-      if (typeof (timeout as { unref?: () => void }).unref === 'function') {
-        (timeout as { unref: () => void }).unref();
+      const timeoutHandle = timeout as unknown as { unref?: () => void };
+      if (typeof timeoutHandle.unref === 'function') {
+        timeoutHandle.unref();
       }
       pendingPurchase = { resolve, timeout };
 

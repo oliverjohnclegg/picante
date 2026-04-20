@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FlatList, View, StyleSheet, useWindowDimensions, Pressable } from 'react-native';
+import { FlatList, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '@ui/components/Screen';
@@ -8,10 +8,12 @@ import Button from '@ui/components/Button';
 import StepHeader from '@ui/components/StepHeader';
 import SetupPlayerRow from '@ui/components/SetupPlayerRow';
 import PlayerFormModal from '@ui/components/PlayerFormModal';
-import { colors, radii, spacing } from '@ui/theme';
+import { colors, layout, radii, spacing } from '@ui/theme';
 import { useSetupStore, MIN_PLAYERS, MAX_PLAYERS } from '@game/setupStore';
 import { strings } from '@i18n/en';
 import type { PlayerDraft } from '@game/playerFactory';
+
+const LANDSCAPE_COLUMN_COUNT = 2;
 
 export default function PlayersScreen() {
   const router = useRouter();
@@ -38,9 +40,9 @@ export default function PlayersScreen() {
   function handleSave(draft: PlayerDraft) {
     if (editingIndex === null) {
       addDraft(draft);
-    } else {
-      updateDraft(editingIndex, draft);
+      return;
     }
+    updateDraft(editingIndex, draft);
   }
 
   function handleRemove() {
@@ -54,19 +56,22 @@ export default function PlayersScreen() {
     modalMode === 'edit' && editingIndex !== null ? (drafts[editingIndex] ?? null) : null;
 
   const canContinue = drafts.length >= MIN_PLAYERS && drafts.every((d) => d.name.trim() !== '');
+  const countLabel = strings.setup.playerCount
+    .replace('{count}', String(drafts.length))
+    .replace('{max}', String(MAX_PLAYERS));
 
   return (
     <Screen>
       <View style={styles.body}>
         <StepHeader step={2} title={strings.setup.stepPlayers} />
         <Text variant="labelSM" color={colors.textMuted}>
-          {drafts.length}/{MAX_PLAYERS} players
+          {countLabel}
         </Text>
         <FlatList
           style={styles.list}
           data={drafts}
           keyExtractor={(_, i) => String(i)}
-          numColumns={isLandscape ? 4 : 1}
+          numColumns={isLandscape ? LANDSCAPE_COLUMN_COUNT : 1}
           key={isLandscape ? 'grid' : 'list'}
           columnWrapperStyle={isLandscape ? styles.columnWrapper : undefined}
           contentContainerStyle={[styles.listContent, isLandscape && styles.listContentLandscape]}
@@ -91,7 +96,7 @@ export default function PlayersScreen() {
             {drafts.length < MAX_PLAYERS ? (
               <Pressable
                 onPress={openAdd}
-                style={({ pressed }) => [styles.addIcon, { opacity: pressed ? 0.65 : 1 }]}
+                style={({ pressed }) => [styles.addIcon, pressed && styles.addIconPressed]}
                 accessibilityRole="button"
                 accessibilityLabel={strings.setup.addPlayer}
               >
@@ -161,13 +166,16 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   addIcon: {
-    width: 44,
-    height: 44,
+    width: layout.minTapTarget,
+    height: layout.minTapTarget,
     borderRadius: radii.md,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
     borderColor: colors.borderStrong,
+  },
+  addIconPressed: {
+    opacity: 0.65,
   },
 });

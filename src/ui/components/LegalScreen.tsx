@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Screen from '@ui/components/Screen';
 import Text from '@ui/components/Text';
 import SectionCard from '@ui/components/SectionCard';
-import { colors, spacing } from '@ui/theme';
+import { colors, layout, radii, spacing } from '@ui/theme';
 import { strings } from '@i18n/en';
 import type { LegalSection } from '@content/legal';
 
@@ -18,11 +18,17 @@ export default function LegalScreen({ title, sections }: Props) {
   return (
     <Screen>
       <View style={styles.header}>
-        <Pressable onPress={() => router.back()} hitSlop={12} accessibilityRole="button">
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={spacing.md}
+          accessibilityRole="button"
+          accessibilityLabel={strings.common.back}
+          style={({ pressed }) => [styles.back, pressed && styles.backPressed]}
+        >
           <Ionicons name="chevron-back" size={28} color={colors.text} />
         </Pressable>
         <Text variant="displayLG">{title}</Text>
-        <View style={{ width: 28 }} />
+        <View style={styles.backSpacer} />
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         {sections.map((section) => (
@@ -47,6 +53,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: spacing.md,
+  },
+  back: {
+    width: layout.minTapTarget,
+    height: layout.minTapTarget,
+    borderRadius: radii.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backPressed: {
+    opacity: 0.6,
+  },
+  backSpacer: {
+    width: layout.minTapTarget,
   },
   body: {
     paddingBottom: spacing.xxl,

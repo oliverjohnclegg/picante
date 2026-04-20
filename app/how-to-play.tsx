@@ -1,28 +1,18 @@
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import Screen from '@ui/components/Screen';
 import Text from '@ui/components/Text';
 import Button from '@ui/components/Button';
 import SectionCard from '@ui/components/SectionCard';
-import { colors, spacing } from '@ui/theme';
+import { colors, layout, radii, spacing } from '@ui/theme';
+import { strings } from '@i18n/en';
 
 const RULES = [
-  {
-    title: 'Penalties, not drinks',
-    body: 'Cards give out penalties. Shots only happen when your penalty total hits your personal threshold — which the app computes from your ABV, your difficulty, and the party size.',
-  },
-  {
-    title: "Everyone's glass is different",
-    body: 'Lightweights and spirit-drinkers take shots at a fair rate. Strong drink = lower threshold = more shots per penalty.',
-  },
-  {
-    title: 'Forfeits are invitations',
-    body: "Every card has a cop-out baked into its text. Don't want to do it? Take the penalty instead.",
-  },
-  {
-    title: 'The host drives',
-    body: "One phone, the drawer's. Subjective calls (vote winners, dare adjudication) get tapped by the drawer on behalf of the group.",
-  },
+  { title: strings.howToPlay.penaltiesTitle, body: strings.howToPlay.penaltiesBody },
+  { title: strings.howToPlay.fairnessTitle, body: strings.howToPlay.fairnessBody },
+  { title: strings.howToPlay.copOutTitle, body: strings.howToPlay.copOutBody },
+  { title: strings.howToPlay.hostTitle, body: strings.howToPlay.hostBody },
 ];
 
 export default function HowToPlayScreen() {
@@ -30,7 +20,17 @@ export default function HowToPlayScreen() {
   return (
     <Screen>
       <View style={styles.header}>
-        <Text variant="displayLG">How to play</Text>
+        <Pressable
+          onPress={() => router.back()}
+          hitSlop={spacing.md}
+          accessibilityRole="button"
+          accessibilityLabel={strings.common.back}
+          style={({ pressed }) => [styles.back, pressed && styles.backPressed]}
+        >
+          <Ionicons name="chevron-back" size={28} color={colors.text} />
+        </Pressable>
+        <Text variant="displayLG">{strings.home.howToPlayTitle}</Text>
+        <View style={styles.spacer} />
       </View>
       <ScrollView contentContainerStyle={styles.body} showsVerticalScrollIndicator={false}>
         {RULES.map((r) => (
@@ -42,14 +42,30 @@ export default function HowToPlayScreen() {
           </SectionCard>
         ))}
       </ScrollView>
-      <Button label="Back" variant="ghost" onPress={() => router.back()} fullWidth />
+      <Button label={strings.common.back} variant="ghost" onPress={() => router.back()} fullWidth />
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
-    paddingBottom: spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: spacing.md,
+  },
+  back: {
+    width: layout.minTapTarget,
+    height: layout.minTapTarget,
+    borderRadius: radii.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backPressed: {
+    opacity: 0.6,
+  },
+  spacer: {
+    width: layout.minTapTarget,
   },
   body: {
     gap: spacing.md,

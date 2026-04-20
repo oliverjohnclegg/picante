@@ -11,7 +11,7 @@ import {
   HomePulseButton,
   HomeEmberButton,
 } from '@ui/components/HomeSpicyActions';
-import { colors, spacing } from '@ui/theme';
+import { colors, layout, radii, spacing } from '@ui/theme';
 import { sessionStore } from '@game/persistence';
 import { useGameStore } from '@game/gameStore';
 import { strings } from '@i18n/en';
@@ -55,10 +55,10 @@ export default function HomeScreen() {
       <View style={[styles.root, isLandscape && styles.rootLandscape]}>
         <Pressable
           onPress={() => router.push('/settings')}
-          style={styles.settingsGear}
-          hitSlop={12}
+          style={({ pressed }) => [styles.settingsGear, pressed && styles.settingsGearPressed]}
+          hitSlop={spacing.md}
           accessibilityRole="button"
-          accessibilityLabel={strings.settings.title}
+          accessibilityLabel={strings.home.openSettings}
         >
           <Ionicons name="settings-outline" size={24} color={colors.textMuted} />
         </Pressable>
@@ -124,8 +124,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
-    padding: spacing.sm,
+    width: layout.minTapTarget,
+    height: layout.minTapTarget,
+    borderRadius: radii.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 10,
+  },
+  settingsGearPressed: {
+    opacity: 0.6,
   },
   hero: {
     flex: 1,

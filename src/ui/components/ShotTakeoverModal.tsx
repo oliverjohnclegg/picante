@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { Modal, View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import type { Player } from '@game/types';
-import { colors, spacing } from '@ui/theme';
 import Text from '@ui/components/Text';
 import Button from '@ui/components/Button';
+import ModalChrome from '@ui/components/sheets/ModalChrome';
+import { colors, spacing } from '@ui/theme';
 import { strings } from '@i18n/en';
-import { MODAL_ALL_ORIENTATIONS } from '@ui/components/modalDefaults';
 import { sfx } from '@platform/sfx';
 
 type Props = {
@@ -20,13 +20,18 @@ export default function ShotTakeoverModal({ player, shots, onDismiss }: Props) {
   }, []);
 
   return (
-    <Modal visible transparent animationType="fade" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
-      <View style={styles.backdrop}>
+    <ModalChrome
+      visible
+      onClose={onDismiss}
+      dismissOnBackdropPress={false}
+      backdropOpacity="intense"
+    >
+      <View style={styles.wrap}>
         <View style={styles.content}>
           <Text variant="labelSM" color={colors.yellow}>
             {strings.shotTakeover.salud.toUpperCase()}
           </Text>
-          <Text variant="displayXL" style={styles.name}>
+          <Text variant="displayXL" style={styles.name} numberOfLines={2}>
             {player.name}
           </Text>
           <Text variant="displayXL" color={colors.orange} style={styles.count}>
@@ -41,17 +46,17 @@ export default function ShotTakeoverModal({ player, shots, onDismiss }: Props) {
           />
         </View>
       </View>
-    </Modal>
+    </ModalChrome>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
+  wrap: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.95)',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: spacing.xl,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.xl,
   },
   content: {
     alignItems: 'center',
@@ -60,5 +65,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   name: { textAlign: 'center' },
-  count: { textAlign: 'center', marginTop: spacing.md, marginBottom: spacing.lg },
+  count: {
+    textAlign: 'center',
+    marginTop: spacing.md,
+    marginBottom: spacing.lg,
+  },
 });
