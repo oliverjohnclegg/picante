@@ -71,16 +71,21 @@ describe('persistence stores', () => {
     );
   });
 
-  it('writes and reads age gate state', async () => {
+  it('writes and reads age gate state with optional dobIso', async () => {
     storage.setItem.mockResolvedValueOnce(undefined);
-    await ageGateStore.write({ confirmed: true });
+    await ageGateStore.write({ confirmed: true, dobIso: '1990-05-20' });
     expect(storage.setItem).toHaveBeenCalledWith(
       '@picante/age-gate/v1',
-      JSON.stringify({ confirmed: true }),
+      JSON.stringify({ confirmed: true, dobIso: '1990-05-20' }),
     );
 
-    storage.getItem.mockResolvedValueOnce(JSON.stringify({ confirmed: true }));
-    await expect(ageGateStore.read()).resolves.toEqual({ confirmed: true });
+    storage.getItem.mockResolvedValueOnce(
+      JSON.stringify({ confirmed: true, dobIso: '1990-05-20' }),
+    );
+    await expect(ageGateStore.read()).resolves.toEqual({
+      confirmed: true,
+      dobIso: '1990-05-20',
+    });
   });
 
   it('clear swallows removeItem failures', async () => {
