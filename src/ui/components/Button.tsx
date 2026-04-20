@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Pressable, StyleSheet, View, type ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Text from '@ui/components/Text';
-import { colors, radii, spacing, elevation } from '@ui/theme';
+import { colors, elevation, gradients, layout, radii, spacing } from '@ui/theme';
 
 type Variant = 'primary' | 'ghost' | 'destructive' | 'success' | 'purple';
 type Size = 'sm' | 'md' | 'lg';
@@ -15,18 +15,20 @@ type Props = {
   disabled?: boolean;
   fullWidth?: boolean;
   style?: ViewStyle;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 };
 
-function gradientForVariant(variant: Variant): [string, string, string] {
+function gradientForVariant(variant: Variant): readonly [string, string, string] {
   switch (variant) {
     case 'primary':
-      return [colors.orange, '#FF8650', colors.yellow];
+      return gradients.primary;
     case 'success':
-      return [colors.green, '#4FC67B', colors.green];
+      return gradients.success;
     case 'destructive':
-      return [colors.red, '#F25B5B', colors.red];
+      return gradients.destructive;
     case 'purple':
-      return [colors.purple, '#A94FD4', colors.purple];
+      return gradients.purple;
     case 'ghost':
     default:
       return [colors.surface, colors.surface, colors.surface];
@@ -65,6 +67,8 @@ export default function Button({
   disabled,
   fullWidth,
   style,
+  accessibilityLabel,
+  accessibilityHint,
 }: Props) {
   const gradient = useMemo(() => gradientForVariant(variant), [variant]);
   const { paddingVertical, paddingHorizontal, variant: textVariant } = sizeTokens(size);
@@ -74,9 +78,13 @@ export default function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityState={{ disabled: isDisabled }}
+      accessibilityLabel={accessibilityLabel ?? label}
+      accessibilityHint={accessibilityHint}
       onPress={onPress}
       disabled={isDisabled}
       style={({ pressed }) => [
+        styles.pressable,
         {
           width: fullWidth ? '100%' : undefined,
           opacity: isDisabled ? 0.45 : pressed ? 0.85 : 1,
@@ -93,7 +101,7 @@ export default function Button({
         </View>
       ) : (
         <LinearGradient
-          colors={gradient}
+          colors={gradient as unknown as [string, string, string]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={[styles.filled, { paddingVertical, paddingHorizontal }]}
@@ -108,16 +116,21 @@ export default function Button({
 }
 
 const styles = StyleSheet.create({
+  pressable: {
+    minHeight: layout.minTapTarget,
+  },
   filled: {
     borderRadius: radii.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: layout.minTapTarget,
     ...elevation.soft,
   },
   ghost: {
     borderRadius: radii.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: layout.minTapTarget,
     borderWidth: 1,
     borderColor: colors.borderStrong,
     backgroundColor: colors.surface,

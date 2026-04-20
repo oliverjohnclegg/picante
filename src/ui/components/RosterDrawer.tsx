@@ -1,14 +1,15 @@
-import { Modal, View, StyleSheet, FlatList, Pressable, useWindowDimensions } from 'react-native';
 import { useState } from 'react';
+import { FlatList, StyleSheet, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useGameStore } from '@game/gameStore';
-import { colors, radii, spacing } from '@ui/theme';
-import Text from '@ui/components/Text';
-import Button from '@ui/components/Button';
+import BottomSheet from '@ui/components/sheets/BottomSheet';
+import SheetFooter from '@ui/components/sheets/SheetFooter';
+import SheetHeader from '@ui/components/sheets/SheetHeader';
 import PlayerChip from '@ui/components/PlayerChip';
 import PlayerFormModal from '@ui/components/PlayerFormModal';
+import Button from '@ui/components/Button';
+import { useGameStore } from '@game/gameStore';
+import { spacing } from '@ui/theme';
 import { strings } from '@i18n/en';
-import { MODAL_ALL_ORIENTATIONS } from '@ui/components/modalDefaults';
 import type { PlayerDraft } from '@game/playerFactory';
 import { MAX_PLAYERS } from '@game/setupStore';
 
@@ -50,15 +51,16 @@ export default function RosterDrawer({ onClose }: Props) {
   function handleSave(draft: PlayerDraft) {
     if (formMode === 'add') {
       addPlayer(draft);
-    } else if (editingId) {
-      updatePlayer(editingId, {
-        name: draft.name,
-        abv: draft.abv,
-        difficulty: draft.difficulty,
-        gender: draft.gender,
-        attractedTo: draft.attractedTo,
-      });
+      return;
     }
+    if (!editingId) return;
+    updatePlayer(editingId, {
+      name: draft.name,
+      abv: draft.abv,
+      difficulty: draft.difficulty,
+      gender: draft.gender,
+      attractedTo: draft.attractedTo,
+    });
   }
 
   function handleRemove() {
@@ -83,54 +85,33 @@ export default function RosterDrawer({ onClose }: Props) {
   return (
     <>
       {!formOpen ? (
-        <Modal
-          visible
-          transparent
-          animationType={isLandscape ? 'fade' : 'slide'}
-          supportedOrientations={MODAL_ALL_ORIENTATIONS}
-        >
-          <View style={[styles.backdrop, isLandscape && styles.backdropLandscape]}>
-            <Pressable style={StyleSheet.absoluteFill} onPress={onClose} />
-            <View style={[styles.sheet, isLandscape && styles.sheetLandscape]}>
-              <View style={styles.header}>
-                <Text variant="displayLG">{strings.game.roster}</Text>
-                <Pressable onPress={onClose}>
-                  <Text variant="displayMD" color={colors.textMuted}>
-                    ✕
-                  </Text>
-                </Pressable>
-              </View>
-              <FlatList
-                data={players}
-                keyExtractor={(p) => p.id}
-                style={isLandscape ? styles.listLandscape : styles.listPortrait}
-                contentContainerStyle={{ gap: spacing.sm, paddingVertical: spacing.md }}
-                renderItem={({ item }) => (
-                  <PlayerChip
-                    player={item}
-                    subtitle={`${Math.round(item.abv * 100)}% · ${item.difficulty}`}
-                    onPress={() => openEdit(item.id)}
-                  />
-                )}
+        <BottomSheet visible onClose={onClose} parentIsLandscape={isLandscape}>
+          <SheetHeader title={strings.game.roster} onClose={onClose} />
+          <FlatList
+            data={players}
+            keyExtractor={(p) => p.id}
+            style={styles.list}
+            contentContainerStyle={styles.listContent}
+            renderItem={({ item }) => (
+              <PlayerChip
+                player={item}
+                subtitle={`${Math.round(item.abv * 100)}% · ${item.difficulty}`}
+                onPress={() => openEdit(item.id)}
               />
-              {players.length < MAX_PLAYERS ? (
-                <Button
-                  label={`+ ${strings.setup.addPlayer}`}
-                  variant="ghost"
-                  fullWidth
-                  onPress={openAdd}
-                />
-              ) : null}
+            )}
+          />
+          <SheetFooter>
+            {players.length < MAX_PLAYERS ? (
               <Button
-                label="End game"
-                variant="destructive"
+                label={`+ ${strings.setup.addPlayer}`}
+                variant="ghost"
                 fullWidth
-                onPress={end}
-                style={{ marginTop: spacing.md }}
+                onPress={openAdd}
               />
-            </View>
-          </View>
-        </Modal>
+            ) : null}
+            <Button label={strings.game.endGame} variant="destructive" fullWidth onPress={end} />
+          </SheetFooter>
+        </BottomSheet>
       ) : null}
       <PlayerFormModal
         visible={formOpen}
@@ -149,42 +130,14 @@ export default function RosterDrawer({ onClose }: Props) {
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
-    justifyContent: 'flex-end',
+  list: {
+    flexGrow: 0,
+    flexShrink: 1,
+    minHeight: 0,
   },
-  backdropLandscape: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: spacing.lg,
+  listContent: {
+    gap: spacing.sm,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
   },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderTopLeftRadius: radii.xl,
-    borderTopRightRadius: radii.xl,
-    padding: spacing.xl,
-    maxHeight: '85%',
-  },
-  sheetLandscape: {
-    borderRadius: radii.xl,
-    width: '100%',
-    maxWidth: 560,
-    maxHeight: '92%',
-    borderWidth: 1,
-    borderColor: colors.border,
-    elevation: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.md,
-  },
-  listPortrait: { maxHeight: 360 },
-  listLandscape: { flexGrow: 0, flexShrink: 1, minHeight: 0, maxHeight: 340 },
 });

@@ -3,11 +3,11 @@ import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import Text from '@ui/components/Text';
-import { colors, radii, spacing, elevation } from '@ui/theme';
+import { colors, elevation, gradients, layout, radii, spacing } from '@ui/theme';
 
 type IonName = ComponentProps<typeof Ionicons>['name'];
 
-type BlazeProps = {
+type BaseProps = {
   label: string;
   icon: IonName;
   onPress: () => void;
@@ -15,19 +15,28 @@ type BlazeProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export function HomeBlazeButton({ label, icon, onPress, fullWidth, style }: BlazeProps) {
+function pressFeel(pressed: boolean, restOpacity = 1, pressedOpacity = 0.9) {
+  return {
+    opacity: pressed ? pressedOpacity : restOpacity,
+    transform: [{ scale: pressed ? 0.985 : 1 }],
+  };
+}
+
+export function HomeBlazeButton({ label, icon, onPress, fullWidth, style }: BaseProps) {
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [
         styles.blazeOuter,
         fullWidth && styles.fullWidth,
         style,
-        { opacity: pressed ? 0.92 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] },
+        pressFeel(pressed, 1, 0.92),
       ]}
     >
       <LinearGradient
-        colors={[colors.orange, '#FF8A4A', colors.yellow]}
+        colors={gradients.blaze as unknown as [string, string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.blazeGradient}
@@ -43,27 +52,21 @@ export function HomeBlazeButton({ label, icon, onPress, fullWidth, style }: Blaz
   );
 }
 
-type OutlineProps = {
-  label: string;
-  icon: IonName;
-  onPress: () => void;
-  fullWidth?: boolean;
-  style?: StyleProp<ViewStyle>;
-};
-
-export function HomeOutlineButton({ label, icon, onPress, fullWidth, style }: OutlineProps) {
+export function HomeOutlineButton({ label, icon, onPress, fullWidth, style }: BaseProps) {
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [
         styles.outlineOuter,
         fullWidth && styles.fullWidth,
         style,
-        { opacity: pressed ? 0.9 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] },
+        pressFeel(pressed),
       ]}
     >
       <LinearGradient
-        colors={[colors.purple, colors.orange, colors.yellow]}
+        colors={gradients.rainbow as unknown as [string, string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.outlineRing}
@@ -79,27 +82,21 @@ export function HomeOutlineButton({ label, icon, onPress, fullWidth, style }: Ou
   );
 }
 
-type PulseProps = {
-  label: string;
-  icon: IonName;
-  onPress: () => void;
-  fullWidth?: boolean;
-  style?: StyleProp<ViewStyle>;
-};
-
-export function HomePulseButton({ label, icon, onPress, fullWidth, style }: PulseProps) {
+export function HomePulseButton({ label, icon, onPress, fullWidth, style }: BaseProps) {
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [
         styles.pulseOuter,
         fullWidth && styles.fullWidth,
         style,
-        { opacity: pressed ? 0.92 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] },
+        pressFeel(pressed, 1, 0.92),
       ]}
     >
       <LinearGradient
-        colors={[colors.green, '#4FD68E', colors.purple]}
+        colors={gradients.pulse as unknown as [string, string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.pulseGradient}
@@ -115,27 +112,21 @@ export function HomePulseButton({ label, icon, onPress, fullWidth, style }: Puls
   );
 }
 
-type EmberProps = {
-  label: string;
-  icon: IonName;
-  onPress: () => void;
-  fullWidth?: boolean;
-  style?: StyleProp<ViewStyle>;
-};
-
-export function HomeEmberButton({ label, icon, onPress, fullWidth, style }: EmberProps) {
+export function HomeEmberButton({ label, icon, onPress, fullWidth, style }: BaseProps) {
   return (
     <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
       onPress={onPress}
       style={({ pressed }) => [
         styles.emberOuter,
         fullWidth && styles.fullWidth,
         style,
-        { opacity: pressed ? 0.9 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] },
+        pressFeel(pressed),
       ]}
     >
       <LinearGradient
-        colors={['rgba(229,62,62,0.35)', 'rgba(255,107,53,0.2)', colors.surface]}
+        colors={gradients.ember as unknown as [string, string, string]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.emberGradient}
@@ -156,6 +147,7 @@ const styles = StyleSheet.create({
   blazeOuter: {
     borderRadius: radii.xl,
     overflow: 'hidden',
+    minHeight: layout.minTapTarget,
     ...elevation.prominent,
   },
   blazeGradient: { borderRadius: radii.xl },
@@ -168,12 +160,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxl,
     borderRadius: radii.xl,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.22)',
+    borderColor: colors.white22,
   },
   blazeLabel: { letterSpacing: 0.8 },
   outlineOuter: {
     borderRadius: radii.xl,
     padding: 2,
+    minHeight: layout.minTapTarget,
     ...elevation.soft,
   },
   outlineRing: { borderRadius: radii.xl - 1 },
@@ -192,6 +185,7 @@ const styles = StyleSheet.create({
   pulseOuter: {
     borderRadius: radii.xl,
     overflow: 'hidden',
+    minHeight: layout.minTapTarget,
     ...elevation.prominent,
   },
   pulseGradient: { borderRadius: radii.xl },
@@ -204,14 +198,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxl,
     borderRadius: radii.xl,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: colors.white18,
   },
   pulseLabel: { letterSpacing: 0.6 },
   emberOuter: {
     borderRadius: radii.xl,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: 'rgba(229,62,62,0.45)',
+    borderColor: colors.red45,
+    minHeight: layout.minTapTarget,
   },
   emberGradient: { borderRadius: radii.xl },
   emberInner: {

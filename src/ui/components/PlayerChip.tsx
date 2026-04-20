@@ -46,10 +46,13 @@ export default function PlayerChip({
   return (
     <Pressable
       onPress={onPress}
+      disabled={!onPress}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={onPress ? `${player.name}${subtitle ? ` · ${subtitle}` : ''}` : undefined}
       style={({ pressed }) => [
         styles.root,
         widthStyle,
-        { opacity: pressed ? 0.85 : 1 },
+        { opacity: pressed && onPress ? 0.85 : 1 },
         size === 'sm' && { paddingVertical: spacing.xs, paddingHorizontal: spacing.sm },
       ]}
     >

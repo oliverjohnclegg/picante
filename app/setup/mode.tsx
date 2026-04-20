@@ -96,8 +96,20 @@ function ModeCard({
   locked,
   lockedLabel,
 }: CardProps) {
+  const a11yHint = locked ? lockedLabel : undefined;
   return (
-    <Pressable onPress={onPress} style={[styles.cardWrap, isLandscape && styles.cardWrapLandscape]}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityState={{ selected, disabled: false }}
+      accessibilityLabel={label}
+      accessibilityHint={a11yHint}
+      style={({ pressed }) => [
+        styles.cardWrap,
+        isLandscape && styles.cardWrapLandscape,
+        pressed && styles.cardWrapPressed,
+      ]}
+    >
       <LinearGradient
         colors={[accent, colors.surface]}
         start={{ x: 0, y: 0 }}
@@ -117,7 +129,7 @@ function ModeCard({
           </View>
         ) : null}
         <Text variant="displayLG">{label}</Text>
-        <Text variant="bodyLG" color={colors.textMuted} style={{ marginTop: spacing.sm }}>
+        <Text variant="bodyLG" color={colors.textMuted} style={styles.cardDesc}>
           {desc}
         </Text>
       </LinearGradient>
@@ -134,6 +146,12 @@ const styles = StyleSheet.create({
   cardWrap: { flex: 1 },
   cardWrapLandscape: {
     minWidth: 0,
+  },
+  cardWrapPressed: {
+    opacity: 0.85,
+  },
+  cardDesc: {
+    marginTop: spacing.sm,
   },
   card: {
     flex: 1,

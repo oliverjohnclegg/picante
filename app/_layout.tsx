@@ -1,7 +1,10 @@
 import { useEffect, useState, type ComponentType } from 'react';
+import { StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppFonts } from '@ui/useFonts';
 import AgeGate from '@ui/components/AgeGate';
@@ -50,18 +53,26 @@ export default function RootLayout() {
 
   return (
     <Boundary>
-      <SafeAreaProvider>
-        <StatusBar style="light" />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: colors.bg },
-            animation: 'fade',
-            orientation: 'all',
-          }}
-        />
-        <AgeGate />
-      </SafeAreaProvider>
+      <GestureHandlerRootView style={styles.root}>
+        <SafeAreaProvider>
+          <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
+            <StatusBar style="light" />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: colors.bg },
+                animation: 'fade',
+                orientation: 'all',
+              }}
+            />
+            <AgeGate />
+          </KeyboardProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </Boundary>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: colors.bg },
+});

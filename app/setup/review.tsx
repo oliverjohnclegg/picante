@@ -32,7 +32,7 @@ export default function ReviewScreen() {
         style={styles.modeCard}
       >
         <Text variant="labelSM" color={colors.textMuted}>
-          MODE
+          {strings.setup.modeHeading.toUpperCase()}
         </Text>
         <Text variant="displayMD" style={{ marginTop: spacing.xs }}>
           {mode === 'diablo' ? strings.setup.modeDiablo : strings.setup.modeTradicional}
@@ -59,7 +59,7 @@ export default function ReviewScreen() {
                     {threshold}
                   </Text>
                   <Text variant="labelSM" color={colors.textMuted}>
-                    PEN / SHOT
+                    {strings.setup.penaltyPerShotLabel.toUpperCase()}
                   </Text>
                 </View>
               </View>

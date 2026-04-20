@@ -3,16 +3,25 @@ export const en = {
     name: 'Picante',
     tagline: 'The spiciest drinking game.',
   },
+  common: {
+    dismiss: 'Dismiss',
+    close: 'Close',
+    back: 'Back',
+    retry: 'Try again',
+  },
   home: {
     startGame: 'Start Game',
     howToPlay: 'How to Play',
+    howToPlayTitle: 'How to play',
     resume: 'Resume previous game',
     discard: 'Discard & start fresh',
+    openSettings: 'Open settings',
   },
   setup: {
     stepMode: 'Pick your mode',
     stepPlayers: "Who's playing?",
     stepReview: 'Review & begin',
+    playerCount: '{count}/{max} players',
     modeTradicional: 'Tradicional',
     modeDiablo: 'Diablo',
     modeTradicionalDesc: 'The classic Picante experience.',
@@ -41,6 +50,8 @@ export const en = {
     begin: 'Begin',
     next: 'Next',
     back: 'Back',
+    penaltyPerShotLabel: 'Pen / shot',
+    modeHeading: 'Mode',
   },
   game: {
     turnOf: "'s turn",
@@ -62,6 +73,8 @@ export const en = {
     leastPenalties: 'Least penalties',
     roster: 'Roster',
     settings: 'Settings',
+    endGame: 'End game',
+    penaltiesOnTheLine: '{amount} PENALTIES ON THE LINE',
   },
   shotTakeover: {
     salud: 'Salud!',
@@ -151,6 +164,20 @@ export const en = {
     restore: 'Restore purchase',
     cancel: 'Maybe later',
     processing: 'Processing…',
+  },
+  howToPlay: {
+    penaltiesTitle: 'Penalties, not drinks',
+    penaltiesBody:
+      'Cards give out penalties. Shots only happen when your penalty total hits your personal threshold — which the app computes from your ABV, your difficulty, and the party size.',
+    fairnessTitle: "Everyone's glass is different",
+    fairnessBody:
+      'Lightweights and spirit-drinkers take shots at a fair rate. Strong drink = lower threshold = more shots per penalty.',
+    copOutTitle: 'Forfeits are invitations',
+    copOutBody:
+      "Every card has a cop-out baked into its text. Don't want to do it? Take the penalty instead.",
+    hostTitle: 'The host drives',
+    hostBody:
+      "One phone, the drawer's. Subjective calls (vote winners, dare adjudication) get tapped by the drawer on behalf of the group.",
   },
 } as const;
 

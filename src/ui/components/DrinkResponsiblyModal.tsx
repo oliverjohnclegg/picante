@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Modal, View, StyleSheet, Pressable } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { create } from 'zustand';
 import { useRouter } from 'expo-router';
-import { colors, radii, spacing } from '@ui/theme';
 import Text from '@ui/components/Text';
 import Button from '@ui/components/Button';
+import CenterSheet from '@ui/components/sheets/CenterSheet';
+import { colors, spacing } from '@ui/theme';
 import { strings } from '@i18n/en';
-import { MODAL_ALL_ORIENTATIONS } from '@ui/components/modalDefaults';
 
 type SessionAck = {
   acknowledged: boolean;
@@ -32,64 +32,55 @@ export default function DrinkResponsiblyModal() {
     setVisible(!acknowledged);
   }, [acknowledged]);
 
+  function confirm() {
+    acknowledge();
+    setVisible(false);
+  }
+
+  function openTos() {
+    acknowledge();
+    setVisible(false);
+    router.push('/tos');
+  }
+
   if (!visible) return null;
 
   return (
-    <Modal visible transparent animationType="fade" supportedOrientations={MODAL_ALL_ORIENTATIONS}>
-      <View style={styles.backdrop}>
-        <View style={styles.sheet}>
-          <Text variant="displayLG" color={colors.orange}>
-            {strings.legal.disclaimerTitle}
+    <CenterSheet
+      visible={visible}
+      onClose={confirm}
+      dismissOnBackdropPress={false}
+      backdropOpacity="intense"
+    >
+      <View style={styles.body}>
+        <Text variant="displayLG" color={colors.orange}>
+          {strings.legal.disclaimerTitle}
+        </Text>
+        <Text variant="bodyLG" color={colors.textMuted} style={styles.copy}>
+          {strings.legal.disclaimerBody}
+        </Text>
+        <Button label={strings.legal.continue} variant="primary" fullWidth onPress={confirm} />
+        <Pressable
+          onPress={openTos}
+          accessibilityRole="link"
+          accessibilityLabel={strings.legal.readTos}
+          hitSlop={spacing.sm}
+          style={styles.tosLink}
+        >
+          <Text variant="labelSM" color={colors.textMuted}>
+            {strings.legal.readTos}
           </Text>
-          <Text variant="bodyLG" color={colors.textMuted} style={styles.body}>
-            {strings.legal.disclaimerBody}
-          </Text>
-          <Button
-            label={strings.legal.continue}
-            variant="primary"
-            fullWidth
-            onPress={() => {
-              acknowledge();
-              setVisible(false);
-            }}
-          />
-          <Pressable
-            onPress={() => {
-              acknowledge();
-              setVisible(false);
-              router.push('/tos');
-            }}
-            style={styles.tosLink}
-            accessibilityRole="link"
-          >
-            <Text variant="labelSM" color={colors.textMuted}>
-              {strings.legal.readTos}
-            </Text>
-          </Pressable>
-        </View>
+        </Pressable>
       </View>
-    </Modal>
+    </CenterSheet>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xl,
-  },
-  sheet: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.xl,
-    padding: spacing.xl,
-    maxWidth: 480,
-    width: '100%',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
   body: {
+    padding: spacing.xl,
+  },
+  copy: {
     marginTop: spacing.md,
     marginBottom: spacing.xl,
   },
