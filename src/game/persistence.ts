@@ -15,7 +15,7 @@ export type SettingsState = {
   hapticsEnabled: boolean;
 };
 
-export const DEFAULT_UNLOCKS: UnlocksState = { diablo: true };
+export const DEFAULT_UNLOCKS: UnlocksState = { diablo: false };
 export const DEFAULT_SETTINGS: SettingsState = {
   soundEnabled: true,
   hapticsEnabled: true,
