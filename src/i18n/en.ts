@@ -16,7 +16,7 @@ export const en = {
     modeTradicional: 'Tradicional',
     modeDiablo: 'Diablo',
     modeTradicionalDesc: 'The classic Picante experience.',
-    modeDiabloDesc: 'Spicier. Sharper. 18+.',
+    modeDiabloDesc: 'Spicier. Sharper.',
     modeDiabloLocked: 'Unlock for $4.99',
     addPlayer: 'Add player',
     addPlayerModalTitle: 'New player',
