@@ -42,7 +42,7 @@ export default function BottomSheet({
     const ratioBudget = winH * maxRatio;
     const keyboardBudget = winH - vertChrome - keyboardPx;
     const budget = Math.max(220, Math.min(ratioBudget, keyboardBudget));
-    return { maxHeight: budget };
+    return { height: budget };
   });
 
   const wrapStyle = isLandscape ? styles.wrapLandscape : styles.wrapPortrait;
