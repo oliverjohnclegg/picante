@@ -1,6 +1,8 @@
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { colors } from '@ui/theme';
 import { MODAL_ALL_ORIENTATIONS } from '@ui/components/modalDefaults';
+import { strings } from '@i18n/en';
 
 type Props = {
   visible: boolean;
@@ -40,17 +42,19 @@ export default function ModalChrome({
       statusBarTranslucent={statusBarTranslucent}
       supportedOrientations={MODAL_ALL_ORIENTATIONS}
     >
-      <View style={styles.root}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Dismiss"
-          style={[styles.backdrop, { backgroundColor: BACKDROP_COLOR[backdropOpacity] }]}
-          onPress={dismissOnBackdropPress ? onClose : undefined}
-        />
-        <View style={styles.content} pointerEvents="box-none">
-          {children}
+      <KeyboardProvider statusBarTranslucent navigationBarTranslucent>
+        <View style={styles.root}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={strings.common.dismiss}
+            style={[styles.backdrop, { backgroundColor: BACKDROP_COLOR[backdropOpacity] }]}
+            onPress={dismissOnBackdropPress ? onClose : undefined}
+          />
+          <View style={styles.content} pointerEvents="box-none">
+            {children}
+          </View>
         </View>
-      </View>
+      </KeyboardProvider>
     </Modal>
   );
 }

@@ -1,6 +1,8 @@
 import {
   colors,
   elevation,
+  gradients,
+  layout,
   motion,
   radii,
   spacing,
@@ -41,5 +43,28 @@ describe('theme tokens', () => {
     expect(elevation.soft.shadowRadius).toBeGreaterThan(0);
     expect(elevation.prominent.shadowRadius).toBeGreaterThan(elevation.soft.shadowRadius);
     expect(elevation.prominent.elevation).toBeGreaterThan(elevation.soft.elevation);
+  });
+
+  it('exposes the sheet elevation preset used by bottom/center sheets', () => {
+    expect(elevation.sheet.shadowRadius).toBeGreaterThan(0);
+    expect(elevation.sheet.elevation).toBeGreaterThan(0);
+  });
+
+  it('gradient tuples are ready for LinearGradient (3 non-empty stops)', () => {
+    for (const [key, stops] of Object.entries(gradients)) {
+      expect(stops.length).toBeGreaterThanOrEqual(2);
+      for (const stop of stops) {
+        expect(typeof stop).toBe('string');
+        expect(stop.length).toBeGreaterThan(0);
+      }
+      expect(Object.keys(gradients)).toContain(key);
+    }
+  });
+
+  it('defines layout constants suitable for iOS HIG tap targets', () => {
+    expect(layout.minTapTarget).toBeGreaterThanOrEqual(44);
+    expect(layout.sheetPortraitMaxHeightRatio).toBeLessThanOrEqual(1);
+    expect(layout.sheetLandscapeMaxHeightRatio).toBeLessThanOrEqual(1);
+    expect(layout.centerSheetMaxWidth).toBeGreaterThan(layout.sheetLandscapeMaxWidth / 2);
   });
 });

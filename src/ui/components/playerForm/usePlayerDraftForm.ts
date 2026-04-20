@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { PlayerDraft } from '@game/playerFactory';
 import type { Difficulty, Gender } from '@game/types';
+import { buildPlayerDraft, DEFAULT_ABV_STR } from '@ui/components/playerForm/playerDraftInput';
 
 export type PlayerDraftFormState = {
   name: string;
@@ -15,9 +16,6 @@ export type PlayerDraftFormState = {
   toggleAttractedTo: (g: Gender) => void;
   toDraft: () => PlayerDraft | null;
 };
-
-const DEFAULT_ABV_STR = '12';
-const ABV_MAX_PCT = 100;
 
 export function usePlayerDraftForm({
   active,
@@ -54,17 +52,7 @@ export function usePlayerDraftForm({
   }
 
   function toDraft(): PlayerDraft | null {
-    const trimmed = name.trim();
-    if (!trimmed) return null;
-    const pct = Number(abvStr);
-    const safePct = Number.isFinite(pct) ? Math.max(0, Math.min(ABV_MAX_PCT, pct)) : 0;
-    return {
-      name: trimmed,
-      abv: safePct / 100,
-      difficulty,
-      gender,
-      attractedTo,
-    };
+    return buildPlayerDraft({ name, abvStr, difficulty, gender, attractedTo });
   }
 
   return {

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { FlatList, ScrollView, View, StyleSheet } from 'react-native';
+import { FlatList, ScrollView, View, StyleSheet, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '@ui/components/Screen';
@@ -11,6 +11,11 @@ import { useSetupStore } from '@game/setupStore';
 import { computeAwards, type Award } from '@game/awards';
 import { colors, spacing } from '@ui/theme';
 import { strings } from '@i18n/en';
+
+const AWARD_GRID_BREAKPOINTS = {
+  stack: 380,
+  quad: 920,
+} as const;
 
 const AWARD_ACCENT: Record<Award['id'], string> = {
   topDrinker: colors.orange,
@@ -28,10 +33,18 @@ const AWARD_ICON: Record<Award['id'], React.ComponentProps<typeof Ionicons>['nam
 
 export default function EndScreen() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const players = useGameStore((s) => s.players);
   const removed = useGameStore((s) => s.removedPlayers);
   const reset = useGameStore((s) => s.reset);
   const resetSetup = useSetupStore((s) => s.reset);
+
+  const awardFlexBasis =
+    width >= AWARD_GRID_BREAKPOINTS.quad
+      ? '23%'
+      : width < AWARD_GRID_BREAKPOINTS.stack
+        ? '100%'
+        : '47%';
 
   const ranked = useMemo(
     () => [...players, ...removed].sort((a, b) => b.rawPenalties - a.rawPenalties),
@@ -65,14 +78,18 @@ export default function EndScreen() {
         {awards.length > 0 ? (
           <View style={styles.awardsGrid}>
             {awards.map((award) => (
-              <SectionCard key={award.id} accent={AWARD_ACCENT[award.id]} style={styles.awardCard}>
+              <SectionCard
+                key={award.id}
+                accent={AWARD_ACCENT[award.id]}
+                style={[styles.awardCard, { flexBasis: awardFlexBasis }]}
+              >
                 <View style={styles.awardHeader}>
                   <Ionicons name={AWARD_ICON[award.id]} size={18} color={AWARD_ACCENT[award.id]} />
                   <Text variant="labelSM" color={AWARD_ACCENT[award.id]}>
                     {award.title}
                   </Text>
                 </View>
-                <Text variant="displaySM" style={styles.awardName}>
+                <Text variant="displaySM" style={styles.awardName} numberOfLines={1}>
                   {award.player.name}
                 </Text>
                 <Text variant="bodySM" color={colors.textMuted}>
@@ -126,8 +143,8 @@ const styles = StyleSheet.create({
   },
   awardCard: {
     flexGrow: 1,
-    flexBasis: '47%',
     gap: spacing.xs,
+    minWidth: 0,
   },
   awardHeader: {
     flexDirection: 'row',
