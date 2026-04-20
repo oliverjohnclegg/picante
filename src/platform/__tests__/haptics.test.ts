@@ -2,6 +2,7 @@ async function loadHapticsModule(options: {
   os: 'web' | 'ios' | 'android';
   impactRejects?: boolean;
   notificationRejects?: boolean;
+  hapticsEnabled?: boolean;
 }) {
   jest.resetModules();
 
@@ -21,6 +22,11 @@ async function loadHapticsModule(options: {
     NotificationFeedbackType: { Success: 'success' },
     impactAsync,
     notificationAsync,
+  }));
+
+  jest.doMock('@platform/settingsStore', () => ({
+    isHapticsEnabled: () => options.hapticsEnabled ?? true,
+    isSoundEnabled: () => true,
   }));
 
   const mod = await import('@platform/haptics');
@@ -63,5 +69,15 @@ describe('haptics helpers', () => {
       notificationRejects: true,
     });
     await expect(successPulse()).resolves.toBeUndefined();
+  });
+
+  it('short-circuits when haptics are disabled in settings', async () => {
+    const { lightTap, mediumTap, successPulse, impactAsync, notificationAsync } =
+      await loadHapticsModule({ os: 'ios', hapticsEnabled: false });
+    await lightTap();
+    await mediumTap();
+    await successPulse();
+    expect(impactAsync).not.toHaveBeenCalled();
+    expect(notificationAsync).not.toHaveBeenCalled();
   });
 });

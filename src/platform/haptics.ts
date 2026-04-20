@@ -1,8 +1,10 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
+import { isHapticsEnabled } from '@platform/settingsStore';
 
 export async function lightTap() {
   if (Platform.OS === 'web') return;
+  if (!isHapticsEnabled()) return;
   try {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   } catch {
@@ -12,6 +14,7 @@ export async function lightTap() {
 
 export async function mediumTap() {
   if (Platform.OS === 'web') return;
+  if (!isHapticsEnabled()) return;
   try {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   } catch {
@@ -21,6 +24,7 @@ export async function mediumTap() {
 
 export async function successPulse() {
   if (Platform.OS === 'web') return;
+  if (!isHapticsEnabled()) return;
   try {
     await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
   } catch {
